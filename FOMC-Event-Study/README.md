@@ -1,120 +1,112 @@
-# 🏛️ Fed Rate-Change Event Study: Market-Wide Reaction & AAPL Abnormal Return
-<p align="left">
-  <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python" height="28" />
-  <img src="https://img.shields.io/badge/pandas-%23150458.svg?style=flat-square&logo=pandas&logoColor=white" alt="pandas" height="28" />
-  <img src="https://img.shields.io/badge/SciPy-%230C55A5.svg?style=flat-square&logo=scipy&logoColor=white" alt="SciPy" height="28" />
-  <img src="https://img.shields.io/badge/statsmodels-8B0000?style=flat-square" alt="statsmodels" height="28" />
-  <img src="https://img.shields.io/badge/Jupyter-F37626?style=flat-square&logo=jupyter&logoColor=white" alt="Jupyter" height="28" />
-</p>
-
-<p align="center">
-  <img src="outputs/part_a_market_reaction.png" alt="SPY with Fed rate-change dates and volatility comparison" width="100%" />
-</p>
+# Fed Rate-Change Event Study 🏛️
+*A mini quant-research project: does the stock market react to Fed interest rate decisions — and does Apple react differently from everyone else?*
 
 ---
-## 📌 Executive Summary
-This project asks two questions in sequence: does the U.S. equity market (SPY) react abnormally around Fed rate-change dates, and if so, does **AAPL specifically** react differently from what its market beta alone predicts?
 
-Using **Python (pandas, statsmodels, scipy)**, 31 Fed rate-change events (2013–2026) were identified directly from FRED's `DFEDTARU` series, then tested with an event-study design (Part A) and a Market-Model abnormal-return analysis (Part B) — cross-checked with both parametric and non-parametric tests throughout.
+## The question I wanted to answer
 
----
-## 💻 Tech Stack
-- **Language:** Python 3
-- **Data Wrangling:** `pandas`, `NumPy`
-- **Statistical Testing:** `scipy.stats` (`ttest_ind`, `ttest_1samp`, `wilcoxon`)
-- **Regression & Diagnostics:** `statsmodels` (`OLS`, `jarque_bera`, `durbin_watson`, `het_arch`)
-- **Visualization:** `matplotlib`
-- **Data Sources:** FRED (`DFEDTARU` — Fed Funds Target Rate), Yahoo Finance (SPY, AAPL daily OHLCV)
-- **Techniques:**
-  - Event-study design with independence-correct (event-level) hypothesis testing
-  - Market-Model regression per event (rolling estimation window, 21-day leakage gap)
-  - Cumulative Abnormal Return (CAR) construction
-  - Robustness via Wilcoxon signed-rank test + bootstrap confidence intervals
-  - Residual diagnostics: normality, heteroskedasticity, autocorrelation
+Every few weeks, the Federal Reserve announces whether it's raising, cutting, or holding interest rates. People in finance always say "the market reacts to Fed decisions" — but I wanted to actually check that with data instead of just assuming it's true. And then I wanted to go one step further: **does a specific stock, like AAPL, react in its own special way, or does it just move because the whole market moves?**
+
+So this project has two parts:
+1. Does the market as a whole (SPY) move differently around Fed rate-change dates?
+2. If it does, does AAPL specifically do anything *beyond* what you'd expect just from it being a stock that tracks the market?
 
 ---
-## 📁 Repository Structure
+
+## Step 1: Getting the data
+
+Three things needed to be lined up by date:
+
+- **SPY prices** (an ETF that tracks the S&P 500 — basically "the market") — daily, 2013 to 2026, from Yahoo Finance
+- **AAPL prices** — same range, also Yahoo Finance
+- **The actual Fed interest rate, every day** — from FRED (the Federal Reserve's own economic database), series called `DFEDTARU`
+
+The clever part: instead of manually looking up every Fed meeting date (which takes forever and is easy to get wrong), I just took the rate series and asked pandas "which days did this number actually change?" (`.diff()` — this shows the difference between today's value and yesterday's). That gave me **31 exact dates** where the Fed changed rates between 2013–2026 — 20 times they raised it, 11 times they cut it. Fully automatic, no manual typing, no chance of a typo in a date.
+
+---
+
+## Step 2: Question 1 — does the whole market react?
+
+For each of the 31 dates, I looked at a 3-day window: the day before, the day of, and the day after. Then I compared: **are these 93 days, on average, more volatile than a normal day?**
+
+First attempt: I just averaged all 93 days together and compared them to normal days. Result: **p = 0.0007** — a really strong result, volatility was clearly higher around Fed dates.
+
+---
+
+## Step 3: I caught a mistake in my own analysis
+
+Here's the thing — those 93 days aren't really 93 independent data points. They come in **groups of 3** (day before / day of / day after), and days next to each other tend to move together. Treating them as 93 separate, unrelated observations is basically cheating — it makes the result look more certain than it actually is.
+
+So I redid it properly: for each of the 31 events, I averaged its own 3-day window down to **one number per event**, giving me 31 real, independent data points instead of 93 fake-independent ones. Result: **p = 0.0341**.
+
+Still significant — the market really is more volatile around Fed dates — but the p-value jumped from 0.0007 to 0.034 just from fixing that one mistake. That's a big lesson: **the way you count your data points can make a result look way more confident than it should.**
+
+(Average |return| in the event window: 1.28%, vs. 0.68% on a normal day — direction of the *return* itself wasn't significant though, p=0.21, so it's volatility that jumps, not a predictable up-or-down move.)
+
+---
+
+## Step 4: Question 2 — does AAPL do anything extra?
+
+Knowing the market moves doesn't tell you anything about AAPL specifically, because AAPL obviously moves *with* the market most of the time anyway (that's what "beta" means). So the real question is: **does AAPL move more, or differently, than what its normal relationship with the market would predict?**
+
+To check this, for each of the 31 events I did the following:
+1. Looked at the ~120 trading days *before* the event (skipping the 21 days right before it, just to be safe) and ran a simple regression: `AAPL return = alpha + beta × market return`. This tells me how AAPL normally behaves relative to the market.
+2. Used that alpha/beta to predict what AAPL *should* have done during the 3-day event window.
+3. Subtracted: `actual AAPL return − predicted AAPL return` = the "abnormal" part, the bit the market alone doesn't explain.
+4. Added those 3 days together per event → one **Cumulative Abnormal Return (CAR)** per event, 31 numbers total.
+
+**Result: mean CAR = +0.22%, but p = 0.599 — not significant.** AAPL doesn't seem to do anything special around Fed dates beyond what its normal market-beta relationship already predicts.
+
+---
+
+## Step 5: making sure that "not significant" result is trustworthy
+
+A regular t-test assumes the data is roughly bell-curve shaped. I checked, and mine wasn't — it has "fat tails" (a few really extreme days pulling things around), which is honestly pretty normal for stock returns. So instead of trusting just the t-test, I also ran:
+
+- **Wilcoxon signed-rank test** — doesn't assume a bell curve at all → p = 0.433
+- **Bootstrap 95% confidence interval** — resample the 31 events 10,000 times and see where the average usually lands → **[-0.61%, +1.01%]**, which includes 0
+
+All three methods agree: no significant AAPL-specific effect. That agreement across 3 different approaches is what actually makes me trust the "nothing here" result — one test alone saying "not significant" isn't as convincing.
+
+---
+
+## Step 6: one more thing I noticed — hikes vs. cuts
+
+Out of curiosity, I split the 31 events into the 20 times the Fed *raised* rates and the 11 times it *cut* them, since lumping "good news" and "bad news" together could hide something:
+
+| | n | Mean CAR | t-test p | Wilcoxon p |
+|---|---|---|---|---|
+| Hikes | 20 | -0.23% | 0.68 | 0.90 |
+| Cuts | 11 | **+1.05%** | 0.086 | 0.10 |
+
+Cuts lean positive, hikes lean flat — which makes economic sense (lower rates → future cash flows worth more today, especially for a growth stock like AAPL). But with only 11 cut events, neither test actually clears the usual 5% bar, so I'm calling this "worth watching," not "proven." I only checked this *because* the combined result came back null, which is exactly the kind of after-the-fact digging that can accidentally manufacture a fake pattern — so I'm not overselling it.
+
+---
+
+## What I'd do differently with more time
+
+- Control for other news that might land on the same day (AAPL earnings, market-wide shocks) — right now those could be quietly mixed into some of the 31 events.
+- Use more robust standard errors (Newey-West) in the regression step, since I confirmed the residuals aren't well-behaved (ARCH-LM test, p<0.0001).
+- Wait for more rate-cut events to accumulate (the 2024–25 cutting cycle is still ongoing) before treating the hikes-vs-cuts split as anything more than a hint.
+- Instead of just hike/cut, classify events by whether they were a *surprise* to the market or fully expected — the research literature suggests surprises move prices more than scheduled, expected decisions.
+
+---
+
+## How to run this
 
 ```text
 02-fomc-event-study/
-│
 ├── data/
-│   ├── spy_2013_2026.csv         # SPY daily OHLCV (Yahoo Finance)
-│   ├── aapl_2013_2026.csv        # AAPL daily OHLCV (Yahoo Finance)
-│   └── DFEDTARU.csv              # Fed Funds Target Rate, Upper Limit (FRED)
-│
+│   ├── spy_2013_2026.csv       # SPY daily prices
+│   ├── aapl_2013_2026.csv      # AAPL daily prices
+│   └── DFEDTARU.csv            # Fed Funds Target Rate, daily (FRED)
 ├── notebooks/
-│   └── fomc_event_study_clean.ipynb   # Full analysis: Part A + Part B
-│
+│   └── fomc_event_study_clean.ipynb   # everything above, runnable top to bottom
 └── outputs/
     ├── part_a_market_reaction.png
     └── part_b_car_by_event.png
 ```
 
----
-## 📂 Dataset Overview
-Daily SPY and AAPL prices (Yahoo Finance) merged against the Fed Funds Target Rate (FRED `DFEDTARU`), which pins down every date the rate actually changed — not every FOMC meeting, only the ones where it moved.
+Open the notebook and run all cells in order — each section is labeled to match the steps above (Part A = Steps 2–3, Part B = Steps 4–6).
 
-### Key Metrics
-* **Trading days:** 3,431 (2013-01-02 to 2026-08-24)
-* **Rate-change events:** 31 total — **20 hikes, 11 cuts**
-* **Event window:** [-1, 0, +1] trading days around each event
-* **Market-Model estimation window:** 120 trading days, ending 21 days before each event (no leakage)
-
----
-## 🚨 Methodology Note
-
-> [!WARNING]
-> The first version of Part A pooled all 93 event-window days as if they were independent observations and got **p=0.0007**. But 3 days from the same event are correlated — they're not independent. Re-running the test at the correct statistical unit (**31 events**, not 93 days) moved the result to **p=0.0341**. Still significant, but the naive version overstated confidence by ~20x. Both versions are kept in the notebook for comparison; the event-level result is the one reported below.
-
----
-## 📊 Key Findings & Insights
-
-**1. The market is significantly more volatile around Fed rate-change dates — confirmed at the correct statistical unit.** Average absolute daily return jumps to **1.279%** in the event window vs. **0.682%** on normal days (event-level test, n=31 independent events: t=2.221, **p=0.0341**).
-* **Insight:** For any daily-frequency event study, always aggregate to one observation per event before testing significance — pooling correlated days (as the exploratory version did) can manufacture false confidence.
-
-**2. But the market doesn't move in a consistent direction.** Average return in the event window is actually slightly negative (-0.117%) vs. +0.066% normally, and this gap is not significant (p=0.215).
-* **Insight:** Fed rate decisions raise *dispersion*, not a predictable directional edge — consistent with an efficient-market reaction to a resolved-uncertainty event rather than a systematic mispricing.
-
-![AAPL Cumulative Abnormal Return by event](outputs/part_b_car_by_event.png)
-
-**3. AAPL shows no significant abnormal return once its market beta is accounted for — and three independent tests agree.** Mean CAR across all 31 events is **+0.223%**, but the t-test (p=0.599), Wilcoxon signed-rank test (p=0.433), and a 10,000-draw bootstrap 95% CI (**[-0.61%, +1.01%]**, includes 0) all reach the same conclusion.
-* **Insight:** AAPL's sensitivity to Fed policy is fully explained by its ordinary market beta — there's no AAPL-specific "Fed-news" channel on top of that. A desk hedging AAPL's Fed-day exposure could reasonably do so with an index position rather than a stock-specific overlay.
-
-**4. Splitting by direction hints at an asymmetry — but it's not confirmed.** Rate **cuts** show a **+1.05%** average CAR (n=11, t-test p=0.086, Wilcoxon p=0.102), while **hikes** show essentially nothing (-0.23%, n=20, p=0.68).
-* **Insight:** Directionally consistent with discounted-cash-flow logic — lower rates raise the present value of AAPL's future cash flows more than symmetric hikes lower it. But at n=11, neither test clears the 5% threshold; this is a hypothesis worth revisiting as more cutting-cycle events accumulate, not a confirmed edge.
-
-**5. Market-Model residuals have fat tails and volatility clustering — exactly why the robustness checks in #3 mattered.** Jarque-Bera rejects normality (p<0.0001, kurtosis=7.96), and ARCH-LM confirms heteroskedasticity (p<0.0001). Autocorrelation is not a concern (Durbin-Watson=1.84).
-* **Insight:** With residuals this non-normal, a plain t-test alone would be a weak basis for a null-result claim — this is why Finding #3's conclusion rests on t-test, Wilcoxon, *and* bootstrap agreeing, not the t-test in isolation.
-
-### Part A — Market-Wide Reaction (event-level test, n=31)
-
-| Hypothesis | Event mean | Normal baseline | t-stat | p-value | Verdict |
-|:---|:---:|:---:|:---:|:---:|:---|
-| Return | -0.117% | +0.066% | -1.268 | 0.2147 | Not significant |
-| \|Return\| (volatility proxy) | 1.279% | 0.682% | 2.221 | **0.0341** | **Significant** |
-
-### Part B — AAPL Abnormal Return (Market Model)
-
-| Sample | n | Mean CAR | t-test p | Wilcoxon p | Verdict |
-|:---|:---:|:---:|:---:|:---:|:---|
-| All events | 31 | +0.223% | 0.599 | 0.433 | Not significant |
-| Hikes only | 20 | -0.232% | 0.683 | 0.898 | Not significant |
-| Cuts only | 11 | +1.050% | 0.086 | 0.102 | Not significant, suggestive |
-
-Bootstrap 95% CI for mean CAR (all events): **[-0.61%, +1.01%]**
-
-### Residual Diagnostics (pooled across all 31 estimation windows)
-
-| Test | Statistic | p-value | Result |
-|:---|:---:|:---:|:---|
-| Jarque-Bera (normality) | 4117.9 | <0.0001 | Not normal (skew=0.70, kurtosis=7.96) |
-| ARCH-LM (heteroskedasticity) | 52.1 | <0.0001 | Heteroskedasticity present |
-| Durbin-Watson (autocorrelation) | 1.84 | — | No major concern |
-
----
-## 🔍 Next Steps (What I Would Do If I Had More Time)
-- **Control for confounding events:** AAPL earnings dates and market-wide macro shocks (e.g. the Aug-2015 China deval selloff, visible as a sharp drawdown in the price chart) can land near rate-change dates and bias specific event windows.
-- **Use Newey-West (HAC) standard errors** in the underlying Market-Model regressions — the confirmed heteroskedasticity means individual alpha/beta standard errors may be understated, even though the CAR-level conclusions are already cross-checked non-parametrically.
-- **Revisit the cuts>hikes asymmetry with a larger sample** as the 2024–25 easing cycle continues, or test it with a BMP-style test (Boehmer, Musumeci & Poulsen 1991), which explicitly adjusts for event-induced volatility changes.
-- **Classify meetings by surprise vs. expected** using Fed funds futures-implied probabilities (CME FedWatch) rather than by outcome alone — surprises, not scheduled decisions, are what the literature suggests move markets most.
+**Tools used:** Python, `pandas`, `scipy` (t-tests, Wilcoxon), `statsmodels` (regression + diagnostics), `matplotlib`.
