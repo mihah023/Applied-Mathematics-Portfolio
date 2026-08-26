@@ -176,6 +176,12 @@ Sensitivity analysis
 
 ## 📜 Relevant Certifications & Credentials
 
+Yes, I know this list is already getting a little long—and honestly, it’s probably going to keep growing! 🧠✨ I’m just someone who gets curious about new things and enjoys learning along the way, whether it’s a new tool, a new concept, or another data problem that makes me go “wait… how does this work?” 🧩
+
+Maybe if you check back in a few years, this section will be ridiculously long. 😂 But for now, I’m still learning, experimenting, and figuring things out one course (and one bug) at a time. 💻
+
+Consider this just a little preview. There’s still a lot more I want to learn! 🚀
+
 | Certification | Issuing Organization | Status / Completion | Link |
 | :--- | :--- | :--- | :---: |
 | *Data Science for Business* | *DataCamp* | 🟢 Completed | *[Verify Certificate](https://www.datacamp.com/statement-of-accomplishment/course/1ee88bb5f5ab32cda9065eb43ccfcabfb7a205fa?raw=1)* |
@@ -184,8 +190,8 @@ Sensitivity analysis
 | *Data Manipulation with pandas* | *DataCamp* | 🟢 Completed | *[Verify Certificate](https://www.datacamp.com/statement-of-accomplishment/course/6f379112e1c2e64e608a28a162cd0c5255ff98e3.png)* |
 | *Introduction to NumPy* | *DataCamp* | 🟢 Completed | *[Verify Certificate](https://www.datacamp.com/statement-of-accomplishment/course/ca166410c042270f66c27d97f3a9912f8bad9f62.png)* |
 | *Introduction to SQL* | *DataCamp* | 🟢 Completed | *[Verify Certificate](https://www.datacamp.com/statement-of-accomplishment/course/8f10034bb78202d6ee9492c15799dd97b377f578.png)* |
----
-
+| *Intermediate SQL* | *DataCamp* | 🟡 In Progress | *Coming Soon* ⏳ |
+| *Manipulating Time Series Data in Python* | *DataCamp* | 🟡 In Progress | *Coming Soon* ⏳ |
 ## 💌 Let's Connect!
 
 * 💼 **LinkedIn:** https://www.linkedin.com/in/nguyentranminhanh/
