@@ -6,7 +6,7 @@
 
 🎓 **International University – Vietnam National University, Ho Chi Minh City** | B.S. Applied Mathematics — Financial Engineering & Risk Management
 
-🏆 **Fun Flex:** GPA **3.32/4.00** | Thesis grade **90/100**
+🏆 **Academic Scholarship:** 2025–2026 Academic Year
 
 🎯 **Target Role:** Quantitative Researcher / Quantitative Analyst Intern
 
@@ -14,173 +14,89 @@
 
 ### 💡 About Me
 
-I'm an Applied Mathematics student specializing in **Financial Engineering & Risk Management**, with a strong interest in quantitative research, financial markets, statistical modeling, and systematic strategies.
+I'm an Applied Mathematics student focused on Financial Engineering & Risk Management, drawn to the problems that sit at the intersection of statistics, markets, and code. I like taking a research question — does the market really react to X, is this risk model actually well-calibrated — and following it all the way through: build the model, backtest it honestly, and report what the data actually says, including when it says "not significant."
 
-I enjoy turning financial questions into testable research problems — from asking whether markets react abnormally to macroeconomic events, to modeling volatility and evaluating risk forecasts. My approach is to **build the model, test the assumptions, backtest the results, and report what the data actually says**, including when the evidence is statistically insignificant.
-
-My current portfolio focuses on **quantitative finance, statistical inference, financial econometrics, and machine learning for portfolio optimization**. I aim to build projects that demonstrate not only technical implementation, but also sound methodology, statistical reasoning, and an honest discussion of limitations.
+👉 I'm currently building a portfolio of quantitative research projects — event studies, volatility/risk models, and machine learning-based portfolio optimization — as preparation for quantitative research roles. Every project here emphasizes reproducible methodology, statistical validation, and an honest account of limitations, not just the headline result.
 
 ---
 
 ## 🛠️ Tech Stack & Favorite Tools 🎯
 
-* **Quantitative Finance:** Event Study Methodology, Market Model, CAPM, Portfolio Optimization, Volatility Modeling, VaR / CVaR, Risk Analysis
-* **Statistics & Econometrics:** Hypothesis Testing, Welch's t-test, Wilcoxon Test, Bootstrap Inference, Regression Analysis, Time-Series Analysis
-* **Machine Learning:** Graph Neural Networks (GNN), Reinforcement Learning, PPO, Portfolio Allocation
-* **Data Science & Scripting:** Python (`pandas`, `numpy`, `scipy`, `statsmodels`, `arch`, `matplotlib`), Jupyter Notebook
-* **Financial Data:** FRED, Yahoo Finance, `yfinance`
-* **Other Tools:** Excel, Git, GitHub
+* **Quantitative Methods:** Event-Study Methodology, Market Model Regression, GARCH Volatility Modeling, VaR/CVaR, Hypothesis Testing, Bootstrap Inference
+* **Data Science & Scripting:** Python (`pandas`, `numpy`, `scipy`, `statsmodels`, `arch`, `matplotlib`, `yfinance`), Jupyter Notebooks
+* **Machine Learning:** Graph Neural Networks, Reinforcement Learning, PPO, PyTorch
+* **Data Sources:** FRED (Federal Reserve Economic Data), Yahoo Finance (`yfinance`), public market datasets
+* **Spreadsheets & Database:** Excel, SQL
 
 ---
 
 ## 📂 Portfolio Projects 📂
 
-<table width="100%">
-  <thead>
-    <tr>
-      <th width="28%" align="left">Project</th>
-      <th width="16%" align="left">Stack</th>
-      <th width="22%" align="left">Scope</th>
-      <th width="34%" align="left">Headline Finding</th>
-    </tr>
-  </thead>
-  <tbody>
+### 📉 [Volatility Forecasting & VaR/CVaR Model](https://github.com/mihah023/Quantitative-Finance-Portfolio/tree/main/01-volatility-var-model)
 
-```
-<tr>
-  <td valign="top">
-    <a href="https://github.com/mihah023/Quantitative-Finance-Portfolio/tree/main/01-volatility-var-model"><b>📉 Volatility Forecasting & VaR/CVaR Model</b></a><br>
-    <sub><a href="https://github.com/mihah023/Quantitative-Finance-Portfolio/blob/main/01-volatility-var-model/notebooks/var_cvar_analysis.ipynb">Notebook ↗</a></sub>
-  </td>
-  <td valign="top">
-    • Python<br>
-    • GARCH(1,1)<br>
-    • VaR / Expected Shortfall<br>
-    • Kupiec Backtest<br>
-    • scipy / arch
-  </td>
-  <td valign="top">
-    • AAPL daily returns<br>
-    • 3 competing VaR models<br>
-    • Rolling 250-day windows
-  </td>
-  <td valign="top">
-    • All three 99% VaR models — Historical, Parametric, and GARCH — pass the Kupiec backtest.<br><br>
-    • <b>GARCH responds fastest to volatility clustering</b>, while Historical Simulation VaR naturally reacts more slowly.<br><br>
-    • Demonstrates the complete risk-model lifecycle: <b>estimate → forecast → formally backtest</b>.
-  </td>
-</tr>
+**Python · GARCH(1,1) · VaR/CVaR · Kupiec Backtest**
 
-<tr>
-  <td valign="top">
-    <a href="https://github.com/mihah023/Quantitative-Finance-Portfolio/tree/main/02-fomc-event-study"><b>🏛️ Fed Rate-Change Event Study</b></a><br>
-    <sub><a href="https://github.com/mihah023/Quantitative-Finance-Portfolio/blob/main/02-fomc-event-study/notebooks/fomc_event_study_clean.ipynb">Notebook ↗</a></sub>
-  </td>
-  <td valign="top">
-    • Python<br>
-    • Market Model<br>
-    • Event Study<br>
-    • Welch's / Wilcoxon Tests<br>
-    • Bootstrap Inference
-  </td>
-  <td valign="top">
-    • SPY & AAPL, 2013–2026<br>
-    • 31 Fed rate-change events<br>
-    • FRED + Yahoo Finance
-  </td>
-  <td valign="top">
-    • The market exhibits a statistically significant response to Fed rate changes (<b>p = 0.034</b>).<br><br>
-    • However, AAPL shows <b>no significant stock-specific abnormal return</b> after controlling for market movements across three independent tests.<br><br>
-    • Corrected a methodological issue during analysis: an early pooled approach overstated significance (<b>p = 0.0007 → 0.034</b>) because the independence assumption was inappropriate.
-  </td>
-</tr>
+> **AAPL | 3 VaR Models | Rolling 250-Day Windows | 99% Confidence Level**
 
-<tr>
-  <td valign="top">
-    <b>🧠 Dynamic Graph Neural Networks for Portfolio Optimization</b><br>
-    <sub>🎓 Undergraduate Thesis</sub>
-  </td>
-  <td valign="top">
-    • Python<br>
-    • Graph Neural Networks<br>
-    • PPO Reinforcement Learning<br>
-    • PyTorch<br>
-    • Portfolio Optimization
-  </td>
-  <td valign="top">
-    • US equities, 2016–2026<br>
-    • Dynamic correlation graphs<br>
-    • 5- & 7-asset universes<br>
-    • GNN + PPO framework
-  </td>
-  <td valign="top">
-    • Developed a hybrid <b>GNN-PPO portfolio allocation framework</b> that incorporates dynamic asset correlations into reinforcement learning.<br><br>
-    • In the 5-asset experiment, GNN-PPO achieved approximately <b>82.8% return</b> with a <b>1.13 Sharpe ratio</b> and ~22.5% maximum drawdown.<br><br>
-    • The GNN component improved cumulative return by approximately <b>16.6 percentage points</b> over PPO without graph information in the main ablation.
-  </td>
-</tr>
-```
+Built and compared Historical Simulation, Parametric, and GARCH-based VaR models to evaluate downside risk under changing volatility.
 
-  </tbody>
-</table>
+**Key Finding:** All three models passed the Kupiec backtest, while **GARCH responded fastest to volatility clustering**.
+
+📓 [View Notebook](https://github.com/mihah023/Quantitative-Finance-Portfolio/blob/main/01-volatility-var-model/notebooks/var_cvar_analysis.ipynb)
 
 ---
 
-## 💼 Industry Experience
+### 🏛️ [Fed Rate-Change Event Study](https://github.com/mihah023/Quantitative-Finance-Portfolio/tree/main/02-fomc-event-study)
 
-**MB Bank — Corporate Customers Department, Eastern Saigon Branch**
-*Banking Intern | Jun 2025 – Aug 2025*
+**Python · Market Model · Event Study · Welch's Test · Wilcoxon · Bootstrap**
 
-* Supported corporate banking operations and documentation processes, including **L/C issuance workflows**.
-* Assisted customers with account opening and digital banking services.
-* Coordinated documentation and processes across **Credit, Transaction, and Accounting** teams.
-* Gained practical exposure to trade finance instruments including **L/C, T/T, D/P, and D/A**, with reference to **UCP 600**.
+> **SPY & AAPL | 31 FOMC Events | 2013–2026 | FRED + Yahoo Finance**
+
+Investigated whether Federal Reserve rate-change announcements generate abnormal returns in the market and for AAPL.
+
+**Key Finding:** Market-level reaction was statistically significant (**p = 0.034**), while AAPL showed **no significant stock-specific abnormal return** after controlling for market movements.
+
+📓 [View Notebook](https://github.com/mihah023/Quantitative-Finance-Portfolio/blob/main/02-fomc-event-study/notebooks/fomc_event_study_clean.ipynb)
 
 ---
+
+### 🧠 Dynamic GNN-PPO Portfolio Optimization
+
+**Python · Graph Neural Networks · PPO · PyTorch**
+
+> **US Equities | 2016–2026 | 5 & 7 Asset Universes | Dynamic Correlation Graphs**
+
+Developed a hybrid GNN-PPO framework that uses dynamic asset correlations to improve reinforcement-learning-based portfolio allocation.
+
+**Key Finding:** The main 5-asset experiment achieved approximately **82.8% return**, **1.13 Sharpe**, and **~22.5% maximum drawdown**. GNN-PPO improved return by approximately **16.6 percentage points** over PPO-only.
+
+🎓 **Undergraduate Thesis**
+
+---
+
+### 🎯 Options Pricing & Greeks
+
+**Python · Black-Scholes · Monte Carlo**
+
+> **European Options | Pricing | Greeks | Sensitivity Analysis**
+
+Developing a quantitative framework for option pricing and sensitivity analysis.
+
+🚧 **In Progress**
+
 
 ## 📜 Relevant Certifications & Credentials
 
-| Certification                                           | Issuing Organization |           Status           |
-| :------------------------------------------------------ | :------------------- | :------------------------: |
-| *DataCamp Certifications*                               | DataCamp             | 🟢 Completed / In Progress |
-| *Additional quantitative finance & data certifications* | —                    |         🚧 Updating        |
-
-> This section will be updated as additional certifications are completed.
-
----
-
-## 🔬 Research Interests
-
-* Quantitative Research
-* Systematic Trading
-* Financial Econometrics
-* Volatility & Risk Modeling
-* Portfolio Optimization
-* Statistical Arbitrage
-* Machine Learning for Finance
-* Reinforcement Learning in Financial Markets
-* Market Microstructure
-
----
-
-## 📚 Currently Building
-
-I'm continuing to expand this portfolio toward more rigorous quantitative research projects, with an emphasis on:
-
-**Market Data → Statistical Model → Backtest → Robustness Checks → Interpretation**
-
-The goal is not simply to produce a profitable backtest, but to understand **why a strategy works, when it fails, and whether the result survives reasonable statistical scrutiny.**
+| Certification                               | Issuing Organization | Status / Completion |       Link      |
+| :------------------------------------------ | :------------------- | :------------------ | :-------------: |
+| *DataCamp Certification*                    | *DataCamp*           | 🟢 Completed        |    *Add link*   |
+| *Quantitative Finance / Data Certification* | *—*                  | 🟡 In Progress      | *Coming Soon* ⏳ |
+| ...                                         | ...                  | ...                 |       ...       |
 
 ---
 
 ## 💌 Let's Connect!
 
-* 💼 **LinkedIn:** [linkedin.com/in/nguyentranminhanh](https://www.linkedin.com/in/nguyentranminhanh/)
+* 💼 **LinkedIn:** https://www.linkedin.com/in/nguyentranminhanh/
 * 📧 **Email:** [mihah023@gmail.com](mailto:mihah023@gmail.com)
 * 🐙 **GitHub:** [mihah023](https://github.com/mihah023)
-
----
-
-### ⭐ Selected Work
-
-> **"Build the model. Test the assumptions. Trust the evidence."**
