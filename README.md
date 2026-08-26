@@ -86,7 +86,7 @@ Demonstrates the full risk-model lifecycle: estimate → forecast → <b>formall
 </a>
 <br><br>
 <sub>
-<a href="https://github.com/mihah023/Quantitative-Finance-Portfolio/blob/main/02-fomc-event-study/notebooks/fomc_event_study_clean.ipynb">
+<a href="FOMC-Event-Study">
 Notebook ↗
 </a>
 </sub>
