@@ -187,7 +187,7 @@ Consider this just a little preview. There’s still a lot more I want to learn!
 | *Data Science for Business* | *DataCamp* | 🟢 Completed | *[Verify Certificate](https://www.datacamp.com/statement-of-accomplishment/course/1ee88bb5f5ab32cda9065eb43ccfcabfb7a205fa?raw=1)* |
 | *Understanding Machine Learning* | *DataCamp* | 🟢 Completed | *[Verify Certificate](https://www.datacamp.com/statement-of-accomplishment/course/211f466b4fb3c2617ea2fc0a675b23cad23ccc55.png)* |
 | *Exploratory Data Analysis in Python* | *DataCamp* | 🟢 Completed | *[Verify Certificate](https://www.datacamp.com/statement-of-accomplishment/course/d8cc4c80662e6442470b66b35b49d5dd7c5301c7.png)* |
-| *Data Manipulation and Data Visualization with Python* | *CSC* | 🟢 Completed | *[Verify Certificate]([https://verify.csc.edu.vn](https://drive.google.com/file/d/1IgxitcAuw2KCLnMHZEskYdn7PONt2Jhk/view?usp=sharing))* |
+| *Data Manipulation and Data Visualization with Python* | *CSC* | 🟢 Completed | *[Verify Certificate](https://drive.google.com/file/d/1IgxitcAuw2KCLnMHZEskYdn7PONt2Jhk/view?usp=sharing)* |
 | *Data Manipulation with pandas* | *DataCamp* | 🟢 Completed | *[Verify Certificate](https://www.datacamp.com/statement-of-accomplishment/course/6f379112e1c2e64e608a28a162cd0c5255ff98e3.png)* |
 | *Introduction to NumPy* | *DataCamp* | 🟢 Completed | *[Verify Certificate](https://www.datacamp.com/statement-of-accomplishment/course/ca166410c042270f66c27d97f3a9912f8bad9f62.png)* |
 | *Introduction to SQL* | *DataCamp* | 🟢 Completed | *[Verify Certificate](https://www.datacamp.com/statement-of-accomplishment/course/8f10034bb78202d6ee9492c15799dd97b377f578.png)* |
