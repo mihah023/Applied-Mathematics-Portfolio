@@ -27,6 +27,7 @@ I'm an Applied Mathematics student focused on Financial Engineering & Risk Manag
 * **Machine Learning:** Graph Neural Networks, Reinforcement Learning, PPO, PyTorch
 * **Data Sources:** FRED (Federal Reserve Economic Data), Yahoo Finance (`yfinance`), public market datasets
 * **Spreadsheets & Database:** Excel, SQL
+---
 
 ## 📂 Portfolio Projects 📂
 
@@ -173,7 +174,7 @@ Sensitivity analysis
 </tbody>
 </table>
 
-
+---
 ## 📜 Relevant Certifications & Credentials
 
 Yes, I know this list is already getting a little long—and honestly, it’s probably going to keep growing! 🧠✨ I’m just someone who gets curious about new things and enjoys learning along the way, whether it’s a new tool, a new concept, or another data problem that makes me go “wait… how does this work?” 🧩
@@ -194,6 +195,7 @@ Consider this just a little preview. There’s still a lot more I want to learn!
 | *Intermediate SQL* | *DataCamp* | 🟡 In Progress | *Coming Soon* ⏳ |
 | *Manipulating Time Series Data in Python* | *DataCamp* | 🟡 In Progress | *Coming Soon* ⏳ |
 ## 💌 Let's Connect!
+---
 
 * 💼 **LinkedIn:** https://www.linkedin.com/in/nguyentranminhanh/
 * 📧 **Email:** [mihah023@gmail.com](mailto:mihah023@gmail.com)
