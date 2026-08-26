@@ -198,6 +198,6 @@ Consider this just a little preview. There’s still a lot more I want to learn!
 ---
 ## 💌 Let's Connect!
 
-* 💼 **LinkedIn:** https://www.linkedin.com/in/nguyentranminhanh/
+* 💼 **LinkedIn:** [Nguyễn Trần Minh Anh](https://www.linkedin.com/in/nguyentranminhanh/)
 * 📧 **Email:** [mihah023@gmail.com](mailto:mihah023@gmail.com)
 * 🐙 **GitHub:** [mihah023](https://github.com/mihah023)
