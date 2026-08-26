@@ -32,57 +32,156 @@ I'm an Applied Mathematics student focused on Financial Engineering & Risk Manag
 
 ## 📂 Portfolio Projects 📂
 
-### 📉 [Volatility Forecasting & VaR/CVaR Model](https://github.com/mihah023/Quantitative-Finance-Portfolio/tree/main/01-volatility-var-model)
+<table>
+  <tr>
+    <th>Project</th>
+    <th>Stack</th>
+    <th>Scope</th>
+    <th>Headline Finding</th>
+  </tr>
 
-**Python · GARCH(1,1) · VaR/CVaR · Kupiec Backtest**
+  <tr>
+    <td>
+      <a href="https://github.com/mihah023/Quantitative-Finance-Portfolio/tree/main/01-volatility-var-model">
+        <b>📉 Volatility Forecasting & VaR/CVaR Model</b>
+      </a>
+      <br><br>
+      <a href="https://github.com/mihah023/Quantitative-Finance-Portfolio/blob/main/01-volatility-var-model/notebooks/var_cvar_analysis.ipynb">
+        📓 Notebook ↗
+      </a>
+    </td>
 
-> **AAPL | 3 VaR Models | Rolling 250-Day Windows | 99% Confidence Level**
+```
+<td>
+  Python<br>
+  GARCH(1,1)<br>
+  VaR / CVaR<br>
+  Kupiec Backtest
+</td>
 
-Built and compared Historical Simulation, Parametric, and GARCH-based VaR models to evaluate downside risk under changing volatility.
+<td>
+  AAPL daily returns<br>
+  3 competing VaR models<br>
+  Rolling 250-day windows<br>
+  99% confidence level
+</td>
 
-**Key Finding:** All three models passed the Kupiec backtest, while **GARCH responded fastest to volatility clustering**.
+<td>
+  All three 99% VaR models pass the Kupiec backtest, but
+  <b>GARCH reacts fastest to volatility clustering</b>,
+  while Historical Simulation VaR lags by design.
+  <br><br>
+  Demonstrates the full risk-model lifecycle:
+  estimate → forecast → <b>formally backtest</b>.
+</td>
+```
 
-📓 [View Notebook](https://github.com/mihah023/Quantitative-Finance-Portfolio/blob/main/01-volatility-var-model/notebooks/var_cvar_analysis.ipynb)
+  </tr>
 
----
+  <tr>
+    <td>
+      <a href="https://github.com/mihah023/Quantitative-Finance-Portfolio/tree/main/02-fomc-event-study">
+        <b>🏛️ Fed Rate-Change Event Study</b>
+      </a>
+      <br><br>
+      <a href="https://github.com/mihah023/Quantitative-Finance-Portfolio/blob/main/02-fomc-event-study/notebooks/fomc_event_study_clean.ipynb">
+        📓 Notebook ↗
+      </a>
+    </td>
 
-### 🏛️ [Fed Rate-Change Event Study](https://github.com/mihah023/Quantitative-Finance-Portfolio/tree/main/02-fomc-event-study)
+```
+<td>
+  Python<br>
+  Market Model<br>
+  Welch's / Wilcoxon<br>
+  Bootstrap Inference
+</td>
 
-**Python · Market Model · Event Study · Welch's Test · Wilcoxon · Bootstrap**
+<td>
+  SPY & AAPL<br>
+  31 Fed rate-change events<br>
+  2013–2026<br>
+  FRED + Yahoo Finance
+</td>
 
-> **SPY & AAPL | 31 FOMC Events | 2013–2026 | FRED + Yahoo Finance**
+<td>
+  The market reacts significantly to Fed rate changes
+  (<b>p = 0.034</b>), but AAPL shows
+  <b>no significant stock-specific abnormal return</b>
+  across three independent tests.
+  <br><br>
+  Corrected a methodology issue that initially overstated significance
+  (<b>p = 0.0007 → 0.034</b>).
+</td>
+```
 
-Investigated whether Federal Reserve rate-change announcements generate abnormal returns in the market and for AAPL.
+  </tr>
 
-**Key Finding:** Market-level reaction was statistically significant (**p = 0.034**), while AAPL showed **no significant stock-specific abnormal return** after controlling for market movements.
+  <tr>
+    <td>
+      <b>🧠 Dynamic GNN-PPO Portfolio Optimization</b>
+      <br><br>
+      🎓 Undergraduate Thesis
+    </td>
 
-📓 [View Notebook](https://github.com/mihah023/Quantitative-Finance-Portfolio/blob/main/02-fomc-event-study/notebooks/fomc_event_study_clean.ipynb)
+```
+<td>
+  Python<br>
+  Graph Neural Networks<br>
+  PPO<br>
+  PyTorch
+</td>
 
----
+<td>
+  US equities, 2016–2026<br>
+  5 & 7 asset universes<br>
+  Dynamic correlation graphs<br>
+  Portfolio allocation
+</td>
 
-### 🧠 Dynamic GNN-PPO Portfolio Optimization
+<td>
+  Main 5-asset experiment achieved approximately
+  <b>82.8% return</b>,
+  <b>1.13 Sharpe</b>, and
+  <b>~22.5% maximum drawdown</b>.
+  <br><br>
+  GNN-PPO improved return by approximately
+  <b>16.6 percentage points</b> over PPO-only.
+</td>
+```
 
-**Python · Graph Neural Networks · PPO · PyTorch**
+  </tr>
 
-> **US Equities | 2016–2026 | 5 & 7 Asset Universes | Dynamic Correlation Graphs**
+  <tr>
+    <td>
+      <b>🎯 Options Pricing & Greeks</b>
+      <br><br>
+      🚧 In Progress
+    </td>
 
-Developed a hybrid GNN-PPO framework that uses dynamic asset correlations to improve reinforcement-learning-based portfolio allocation.
+```
+<td>
+  Python<br>
+  Black-Scholes<br>
+  Monte Carlo
+</td>
 
-**Key Finding:** The main 5-asset experiment achieved approximately **82.8% return**, **1.13 Sharpe**, and **~22.5% maximum drawdown**. GNN-PPO improved return by approximately **16.6 percentage points** over PPO-only.
+<td>
+  European options<br>
+  Option pricing<br>
+  Greeks<br>
+  Sensitivity analysis
+</td>
 
-🎓 **Undergraduate Thesis**
+<td>
+  <i>Coming soon</i> ⏳
+</td>
+```
 
----
+  </tr>
 
-### 🎯 Options Pricing & Greeks
+</table>
 
-**Python · Black-Scholes · Monte Carlo**
-
-> **European Options | Pricing | Greeks | Sensitivity Analysis**
-
-Developing a quantitative framework for option pricing and sensitivity analysis.
-
-🚧 **In Progress**
 
 
 ## 📜 Relevant Certifications & Credentials
