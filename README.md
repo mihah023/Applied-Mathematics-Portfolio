@@ -194,8 +194,9 @@ Consider this just a little preview. There’s still a lot more I want to learn!
 | *Introduction to SQL* | *DataCamp* | 🟢 Completed | *[Verify Certificate](https://www.datacamp.com/statement-of-accomplishment/course/8f10034bb78202d6ee9492c15799dd97b377f578.png)* |
 | *Intermediate SQL* | *DataCamp* | 🟡 In Progress | *Coming Soon* ⏳ |
 | *Manipulating Time Series Data in Python* | *DataCamp* | 🟡 In Progress | *Coming Soon* ⏳ |
-## 💌 Let's Connect!
+
 ---
+## 💌 Let's Connect!
 
 * 💼 **LinkedIn:** https://www.linkedin.com/in/nguyentranminhanh/
 * 📧 **Email:** [mihah023@gmail.com](mailto:mihah023@gmail.com)
