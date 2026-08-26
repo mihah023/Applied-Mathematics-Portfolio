@@ -178,7 +178,7 @@ Sensitivity analysis
 
 | Certification                               | Issuing Organization | Status / Completion |       Link      |
 | :------------------------------------------ | :------------------- | :------------------ | :-------------: |
-| *DataCamp Certification*                    | *DataCamp*           | 🟢 Completed        |    *Add link*   |
+| *Data Science for Business Certification*                    | *DataCamp*           | 🟢 Completed        |    *[Add link](https://www.datacamp.com/statement-of-accomplishment/course/1ee88bb5f5ab32cda9065eb43ccfcabfb7a205fa?raw=1)*   |
 | *Quantitative Finance / Data Certification* | *—*                  | 🟡 In Progress      | *Coming Soon* ⏳ |
 | ...                                         | ...                  | ...                 |       ...       |
 
