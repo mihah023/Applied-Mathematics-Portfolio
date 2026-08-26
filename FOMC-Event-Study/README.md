@@ -152,30 +152,15 @@ Three things make this conclusion more trustworthy than a single p-value:
 │   ├── spy_2013_2026.csv           # SPY daily OHLCV (yfinance)
 │   ├── aapl_2013_2026.csv          # AAPL daily OHLCV (yfinance)
 │   ├── DFEDTARU.csv                # FRED daily Fed Funds Target Rate (Upper), 2008-2026
-│   ├── all_stocks_5yr.csv          # 505 S&P 500 tickers, 2013-2018 (used in v2, superseded)
-│   ├── equal_weighted_index.csv    # v2 market-proxy index (superseded by SPY in final version)
-│   ├── fomc_meeting_dates_v2.csv   # v1/v2 hand-compiled 28-meeting calendar (superseded)
-│   └── aapl_prices_raw.csv         # v1 2-year AAPL sample (superseded)
+│  
 ├── notebooks/
 │   ├── fomc_event_study_clean.ipynb   # ★ FINAL — Part A + Part B, full analysis (this README)
-│   ├── build_index.py / .ipynb        # v2: builds equal-weighted 505-stock index
-│   ├── fomc_event_study.py / .ipynb   # v1: single-stock AAPL, 16 hand-typed dates
-│   ├── fomc_event_study_v2.py / .ipynb# v2: 505-stock index, 28 dates
-│   └── spy_event_study_v3.py / .ipynb # v3: full-history SPY, 31 dates (precursor to final)
+│ 
 └── outputs/
     ├── part_a_market_reaction.png
     ├── part_b_car_by_event.png
     └── [earlier versions' charts and summary CSVs, kept for the version history below]
 ```
-
-## Version History
-
-| Version | Test asset | Events | Key result | What changed |
-|---|---|---|---|---|
-| v1 | AAPL alone | 16 (hand-typed) | p=0.14–0.76, nothing significant | Baseline, single noisy stock |
-| v2 | 505-stock equal-weighted index | 28 (2013-2018 only) | p=0.070, marginal | Diversified test asset to cut idiosyncratic noise |
-| v3 | SPY (real index) | 31 (2013-2026, FRED-verified) | p=0.0007 (daily-pooled) | Extended to full history, all rate-change cycles |
-| **Final** | **SPY (Part A) + AAPL vs SPY Market Model (Part B)** | **31** | **p=0.0341 (Part A, event-level)**; **CAR not significant (Part B)** | Fixed the independence assumption in Part A; added a genuine Market-Model abnormal-return test for AAPL; added Wilcoxon + bootstrap robustness checks |
 
 The progression itself is worth narrating in an interview: each version's
 limitation motivated the next fix, ending with a methodologically defensible
