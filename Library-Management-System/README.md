@@ -49,7 +49,7 @@ Using PHP (`mysqli`) and vanilla JavaScript, the interface generates column chec
 ```sql
 SELECT ...
 FROM book b
-LEFT JOIN author  a ON b.author = a.name
+LEFT JOIN author  a ON b.author_id = a.author_id
 LEFT JOIN category c ON b.category_id = c.category_id
 LEFT JOIN storage  s ON b.storage_id = s.storage_id
 ```
