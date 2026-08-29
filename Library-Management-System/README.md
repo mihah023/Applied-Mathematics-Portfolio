@@ -20,6 +20,7 @@ Using PHP (`mysqli`) and vanilla JavaScript, the interface generates column chec
 > Access locally via XAMPP: `http://localhost/project/research.html`
 
 *(Screenshots go here — add images of the form, a search result, and the "Multiple" combined view)*
+![Home Page](screenshots/home-page.png)
 
 ---
 
