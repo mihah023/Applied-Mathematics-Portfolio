@@ -69,10 +69,17 @@ project/
 ├── research.html    # Main page — table/column/function selection form
 ├── about.html        # About page — library info
 ├── result.php         # Backend handler — validates input, builds & runs SQL, renders results
-└── logo.svg            # University logo (SVG)
+├── logo.svg            # University logo (SVG)
+└── database/
+    ├── 00_schema.sql          # CREATE TABLE statements for all tables
+    ├── 01_seed_author.sql     # Sample data for `author`
+    ├── 02_seed_category.sql   # Sample data for `category`
+    ├── 03_seed_storage.sql    # Sample data for `storage`
+    ├── 04_seed_book.sql       # Sample data for `book`
+    └── run_all.sql            # Runs schema + all seed files in order
 ```
 
-> Note: files are kept flat (no subfolders) so relative paths (`logo.svg`, `result.php`, `about.html`) resolve correctly when served by Apache.
+> Note: the web files (`research.html`, `about.html`, `result.php`, `logo.svg`) are kept flat at the project root — not inside `database/` — so their relative paths to each other resolve correctly when served by Apache. `database/` only holds SQL setup files, which are never accessed by the browser.
 
 ---
 
@@ -88,22 +95,10 @@ project/
    C:\xampp\htdocs\project\
    ```
 
-2. **Create the database** — open phpMyAdmin and create a database named `iudbs`, then create the required tables. Example for `category`:
-   ```sql
-   CREATE TABLE `category` (
-       `category_id` INT AUTO_INCREMENT PRIMARY KEY,
-       `category` VARCHAR(100) NOT NULL,
-       `sub_category` VARCHAR(100),
-       `book_country` VARCHAR(100),
-       `target_audience` VARCHAR(100),
-       `recommended_age` VARCHAR(50),
-       `description` TEXT,
-       `average_rating` DECIMAL(3,2),
-       `keyword` VARCHAR(255),
-       `popular_book` VARCHAR(255)
-   );
-   ```
-   Repeat similarly for `author`, `storage`, and `book` (see column lists in [Data Model](#️-data-model) above; `book.author` stores the author's **name** as text, and `book.category_id` / `book.storage_id` are foreign keys).
+2. **Create the database** — open phpMyAdmin, create a database named `iudbs`, then run the setup script:
+   - Go to the **SQL** tab (or **Import**) in phpMyAdmin
+   - Run `database/run_all.sql` — this executes `00_schema.sql` (creates all tables) followed by the seed files (`01_seed_author.sql` → `04_seed_book.sql`) to populate sample data
+   - Alternatively, run the files one by one in order (`00` → `04`) if your phpMyAdmin version doesn't support `SOURCE`/multi-file import directly
 
 3. **Configure DB credentials** in `result.php` if different from default XAMPP settings:
    ```php
