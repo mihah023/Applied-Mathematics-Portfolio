@@ -1,8 +1,11 @@
 # 📚 Library Management System
 
-A dynamic, form-driven **Library Management System** built with **PHP (mysqli)**, **MySQL**, and **vanilla JavaScript**. The system lets a user pick any table, select which columns to work with, and perform full CRUD operations (Show / Search / Update / Delete / Insert) — including a special **"Multiple"** mode that JOINs data across four tables into one unified view.
+This project implements a dynamic Library Management System (PHP, MySQL) for International University, VNU-HCM, allowing staff to browse, search, insert, update, and delete records across four core tables — category, author, storage, and book — through a single dynamically-generated form.
 
-Built as a coursework project for **International University, Vietnam National University – HCMC (VNU-HCM)**.
+Using PHP (mysqli) and vanilla JavaScript, the interface generates column checkboxes on the fly based on the table selected, then routes each request through a shared backend (result.php) that validates the table/column input against a whitelist and executes prepared-statement SQL. A dedicated "Multiple" mode performs a live SQL JOIN across all four tables to surface enriched, cross-referenced book records in a single view.
+
+🛑 [!NOTE]
+Team & Role: This was a group project (3-person team, International University – VNU-HCM). This repo contains the full project as submitted by the team. My individual contribution was implementing the Insert function in result.php and helping build the HTML pages (research.html, about.html). Teammates contributed the database schema design and the remaining CRUD functions (Show / Search / Update / Delete) and multi-table JOIN logic.
 
 ---
 
