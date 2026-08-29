@@ -19,8 +19,18 @@ Using PHP (`mysqli`) and vanilla JavaScript, the interface generates column chec
 
 > Access locally via XAMPP: `http://localhost/project/research.html`
 
-*(Screenshots go here — add images of the form, a search result, and the "Multiple" combined view)*
 ![Home Page](screenshots/home-page.png)
+*Main form — select a table and an action to perform.*
+
+![Table Dropdown](screenshots/table-dropdown.png)
+*Choosing a table dynamically populates the column checkboxes below.*
+
+![Activity Dropdown](screenshots/activity-dropdown.png)
+*Choosing an activity determines which fields appear (search, insert, update, delete).*
+
+*(More screenshots go here — add images of a Search result, an Insert form, and the "Multiple" combined view)*
+
+
 
 ---
 
