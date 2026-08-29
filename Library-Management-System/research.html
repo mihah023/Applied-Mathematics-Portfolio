@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Thư viện</title>
+    <style>
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #34495e;
+            color: white;
+            padding: 15px 30px;
+            position: sticky;
+            top: 0;
+            margin-bottom: 60px;
+            z-index: 10;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        header .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        header .logo img {
+            width: 50px;
+            height: auto;
+            margin-right: 10px;
+        }
+
+        header .logo h2 {
+            font-size: 14px;
+            margin: 0;
+            color: white;
+        }
+
+        header .logo p {
+            font-size: 12px;
+            margin: 0;
+            color: white;
+        }
+
+        header .title {
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+            flex-grow: 1;
+        }
+
+        header nav {
+            display: flex;
+            align-items: center;
+        }
+
+        header nav ul {
+            list-style: none;
+            display: flex;
+            margin: 30;
+            padding: 0;
+        }
+
+        header nav ul li {
+            margin: 0 15px;
+        }
+
+        header nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        header nav ul li a:hover {
+            color: #2ecc71;
+        }
+
+        /* Body */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-image: url('https://i0.wp.com/stanzaliving.wpcomstaging.com/wp-content/uploads/2022/04/fc23e-library-in-jaipur.jpg?fit=1000%2C667&ssl=1%27);');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            position: relative;
+            min-height: 50vh; /* Đảm bảo chiều cao tối thiểu bằng chiều cao cửa sổ */
+            
+            flex-direction: column; /* Sắp xếp theo cột */
+            }
+
+        /* Tạo lớp phủ mờ cho toàn bộ trang (bao gồm cả footer) */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: -1;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-top: 50px;
+            margin-bottom: 10px;
+        }
+
+        form {flex: 1; 
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: 40px auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        label, select, input {
+            display: block;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        label {
+            color: #34495e;
+        }
+
+        select, input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: #ecf0f1;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        select:focus, input[type="text"]:focus {
+            border-color: #3498db;
+            background-color: #fff;
+        }
+
+        button {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #27ae60;
+        }
+
+        form div {
+            margin-bottom: 20px;
+        }
+
+        #columnSelect, #columnInput {
+            display: none;
+        }
+
+        select:hover, input[type="text"]:hover {
+            border-color: #2980b9;
+        }
+
+        .column-item {
+            display: inline-block;
+            width: 30%;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .column-item input {
+            margin-right: 5px;
+        }
+
+        .column-item label {
+            display: inline-block;
+            vertical-align: middle;
+            font-size: 16px;
+            color: #34495e;
+            margin-left: 5px;
+        }
+
+        #columns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #34495e; /* Giống màu header */
+            padding: 10px 30px;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            color: white;
+            font-size: 12px;
+            position: relative;
+            margin-top: 70px; /* Khoảng cách với phần nội dung phía trên */
+        }
+
+        footer h3 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+        }
+
+        footer p {
+            padding: 20px;
+            margin: 40px 0 0;
+            font-size: 18px;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <img src="logo.svg" alt="Logo">
+            <div>
+                <h2>Vietnam National University</h2>
+
+<p>International University</p>
+</div>
+        </div>
+        <div class="title">Library Management System</div>
+        <nav>
+            <ul>
+                <li><a href="javascript:void(0);" onclick="stayOnPage()">Home</a></li> <!-- Sử dụng JavaScript để giữ lại trang hiện tại -->
+                <li><a href="about.html" target="_blank">About</a></li> <!-- Chuyển đến trang giới thiệu đồ án -->
+                <li><a href="https://library.hcmiu.edu.vn/vi" target="_blank">Contact</a></li> <!-- Liên kết đến trang web của trường -->
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Content -->
+
+    <!-- Form -->
+    <form method="POST" action="result.php" onsubmit="return validateForm()">
+        <!-- Chọn bảng -->
+        <label for="table">Please Select Table:</label>
+        <select name="table" id="table" onchange="loadColumns()">
+            <option value="">-- Select Table --</option>
+            <option value="category">Category</option>
+            <option value="author">Author</option>
+            <option value="storage">Storage</option>
+            <option value="book">Book</option>
+            <option value="enrol">Multiple</option> <!-- Thêm bảng enrol vào lựa chọn -->
+        </select>
+
+        <!-- Chọn cột -->
+        <div id="columns">
+            <!-- Các checkbox sẽ được load bằng JavaScript -->
+        </div>
+
+        <!-- Chọn chức năng -->
+        <label for="function">What do you want to do?</label>
+        <select name="function" id="function" onchange="showFields()">
+            <option value="">-- Select Activity --</option>
+            <option value="show_table">Show Table</option>
+            <option value="search">Search</option>
+            <option value="update">Update</option>
+            <option value="delete">Delete</option> <!-- Thêm tùy chọn Delete -->
+            <option value="insert">Insert</option> <!-- Thêm tùy chọn Insert -->
+        </select>
+
+        <!-- Thông tin tìm kiếm và cập nhật -->
+        <div id="operation-fields">
+            <!-- Các trường nhập liệu sẽ hiện ra khi chọn chức năng search hoặc update -->
+        </div>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        let columns = []; // Biến lưu trữ danh sách cột
+
+        // Khóa chính cố định của từng bảng — PHẢI khớp với $primary_keys trong result.php
+        const primaryKeys = {
+            category: "category_id",
+            author: "author_id",
+            storage: "storage_id",
+            book: "book_id"
+        };
+
+        function loadColumns() {
+            var table = document.getElementById("table").value;
+            var columnsDiv = document.getElementById("columns");
+            columnsDiv.innerHTML = ""; // Xóa nội dung trước đó
+            columns = []; // Đặt lại mảng cột
+
+            // Lấy danh sách cột dựa trên bảng được chọn
+            if (table === "category") {
+                columns = ["category_id", "category", "sub_category", "book_country", "target_audience", "recommended_age", "description", "average_rating", "keyword", "popular_book"];
+            } else if (table === "author") {
+
+columns = ["author_id", "name", "pen_name", "date_of_birth", "gender", "field", "address", "email", "nationality", "active_year"];
+            } else if (table === "storage") {
+                columns = ["storage_id", "block", "capacity", "current_quantity", "condition", "last_checked_day", "manager_name", "category", "shelf", "floor"];
+            } else if (table === "book") {
+                columns = ["book_id", "title", "edition", "publisher", "year", "author", "category_id", "language", "number_page", "storage_id"];
+            } else if (table === "enrol") {
+                columns = ["book_id", "title", "edition", "publisher", "year", "language", "number_page", "author_name", "pen_name", "date_of_birth", "gender", "field", "sub_category", "category", "book_country", "target_audience", "block", "manager_name"];
+            }
+
+            // Tạo checkbox cho các cột
+            columns.forEach(function(column) {
+                var columnItem = document.createElement("div");
+                columnItem.className = "column-item"; // Lớp căn chỉnh cho mỗi checkbox
+
+                var checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.name = "columns[]";
+                checkbox.value = column;
+                checkbox.checked = true; // Mặc định chọn tất cả cột
+                checkbox.onchange = function() {
+                    showFields(); // Cập nhật các trường nhập liệu ngay khi cột thay đổi
+                };
+
+                var label = document.createElement("label");
+                label.textContent = column;
+
+                columnItem.appendChild(checkbox);
+                columnItem.appendChild(label);
+                columnsDiv.appendChild(columnItem);
+            });
+
+            showFields(); // Cập nhật ngay sau khi chọn bảng mới
+        }
+
+        function addTextField(container, columnName, labelPrefix) {
+            var label = document.createElement("label");
+            label.textContent = (labelPrefix || "Enter ") + columnName + ": ";
+
+            var input = document.createElement("input");
+            input.type = "text";
+            input.name = columnName;
+
+            container.appendChild(label);
+            container.appendChild(input);
+            container.appendChild(document.createElement("br"));
+        }
+
+        function showFields() {
+            var table = document.getElementById('table').value;
+            var selectedFunction = document.getElementById('function').value;
+            var operationFields = document.getElementById('operation-fields');
+            operationFields.innerHTML = "";
+
+            var selectedColumns = document.querySelectorAll('input[name="columns[]"]:checked');
+
+            if (selectedColumns.length === 0) {
+                selectedColumns = document.querySelectorAll('input[name="columns[]"]');
+            }
+
+            if (selectedFunction === "search" || selectedFunction === "insert") {
+                // Search / Insert: dùng đúng các cột đang được tick
+                selectedColumns.forEach(function(column) {
+                    addTextField(operationFields, column.value);
+                });
+
+            } else if (selectedFunction === "update") {
+                // Update: LUÔN có 1 ô ID riêng, cố định theo bảng,
+                // không phụ thuộc checkbox có tick hay không
+                var idColumn = primaryKeys[table];
+
+                if (idColumn) {
+                    addTextField(operationFields, idColumn, "ID (" + idColumn + ") - bắt buộc: ");
+                }
+
+                selectedColumns.forEach(function(column) {
+                    if (column.value === idColumn) return; // đã có ô ID riêng ở trên rồi
+                    addTextField(operationFields, column.value, "New value for ");
+                });
+
+            } else if (selectedFunction === "delete") {
+                // Delete: chỉ cần đúng 1 ô ID cố định theo bảng
+                var idColumn = primaryKeys[table];
+
+                if (idColumn) {
+                    addTextField(operationFields, idColumn, "Enter " + idColumn + " to delete: ");
+                }
+            }
+        }
+    </script>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Vietnam National University. All Rights Reserved.</p>
+    </footer>
+
+</body>
+</html>
