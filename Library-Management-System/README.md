@@ -118,24 +118,10 @@ project/
    http://localhost/project/research.html
    ```
 
----
 
-## 🧠 Lessons Learned
-
-While building and debugging this project, a few real issues came up that shaped the final design:
-
-- **Table-not-found errors** — early on, the `category` table hadn't been created yet in the `iudbs` database, causing `mysqli_sql_exception: Table 'iudbs.category' doesn't exist`. This reinforced the importance of keeping the schema and the PHP `$allowed_columns` definitions in sync from day one.
-- **Update/Delete targeting the wrong row** — the original logic picked *"whichever column was checked first"* as the row identifier. Since several sample rows shared the same `category` name (e.g. two "Fiction" rows), this could delete/update **multiple rows at once** unintentionally. Fixed by hardcoding a `$primary_keys` map so Update/Delete always key off the real primary key, independent of which checkboxes are ticked.
-- **Frontend/backend column drift** — the `storage` table's `condition` column existed in the PHP whitelist but was missing from the JavaScript checkbox list, silently excluding it from every form submission. A reminder that generated form fields must always be checked against the backend's source of truth.
-- **Broken internal links** — a leftover reference to a non-existent `search.html` page (from an earlier filename before the project was reorganized) caused a dead "Home" link on the About page.
 
 ---
 
-## 📬 Contact
-
-- International University, VNU-HCM Library: https://library.hcmiu.edu.vn/vi
-
----
 
 ## 📄 License
 
