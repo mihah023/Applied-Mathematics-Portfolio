@@ -46,12 +46,12 @@ I'm an Applied Mathematics student focused on Financial Engineering & Risk Manag
 <tr>
 
 <td valign="top">
-<a href="[https://github.com/mihah023/Quantitative-Finance-Portfolio/tree/main/02-fomc-event-study](https://github.com/mihah023/Applied-Mathematics-Portfolio/tree/main/FOMC-Event-Study)">
+<a href="[https://github.com/mihah023/Quantitative-Finance-Portfolio/tree/main/02-fomc-event-study]">
 <b>🏛️ Fed Rate-Change Event Study</b>
 </a>
 <br><br>
 <sub>
-<a href="[https://github.com/mihah023/Quantitative-Finance-Portfolio/blob/main/02-fomc-event-study/notebooks/fomc_event_study_clean.ipynb](https://github.com/mihah023/Applied-Mathematics-Portfolio/blob/03abe4d590ff3f55ac91b342ad941dc2cd7a74e7/FOMC-Event-Study/fomc_event_study_final_clean%20(1).ipynb)">
+<a href="[https://github.com/mihah023/Quantitative-Finance-Portfolio/blob/main/02-fomc-event-study/notebooks/fomc_event_study_clean.ipynb]">
 Notebook ↗
 </a>
 </sub>
