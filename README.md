@@ -29,8 +29,6 @@ I'm an Applied Mathematics student focused on Financial Engineering & Risk Manag
 * **Spreadsheets & Database:** Excel, SQL
 
 ---
-## 🎯 Research Interests Quantitative Finance · Financial Risk Modeling · Financial Econometrics · Time Series Analysis · Portfolio Optimization · Machine Learning for Finance
----
 
 ## 📂 Portfolio Projects 📂
 
@@ -240,6 +238,13 @@ Sensitivity analysis
 
 </tbody>
 </table>
+---
+## 📚 Research Interests
+
+**Quantitative Finance** · **Financial Risk Modeling** · **Financial Econometrics** ·  
+**Time Series Analysis** · **Portfolio Optimization** · **Machine Learning for Finance** ·  
+**Reinforcement Learning for Portfolio Allocation**
+```
 
 ---
 ## 📜 Relevant Certifications & Credentials
