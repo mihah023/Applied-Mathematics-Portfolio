@@ -44,6 +44,36 @@ I'm an Applied Mathematics student focused on Financial Engineering & Risk Manag
 
 <tbody>
 <tr>
+<td valign="top">
+<a href="https://github.com/mihah023/Applied-Mathematics-Portfolio/tree/main/Volatility-Risk-Modeling">
+<b>📉 GARCH Volatility Modeling & VaR/CVaR Backtesting</b>
+</a>
+<br><br>
+<sub>
+<a href="https://github.com/mihah023/Applied-Mathematics-Portfolio/blob/main/Volatility-Risk-Modeling/notebooks/garch_var_cvar.ipynb">
+Notebook ↗
+</a>
+</sub>
+</td>
+<td valign="top">
+Python<br>
+GARCH(1,1), Student-t<br>
+Jarque-Bera, ARCH-LM<br>
+Kupiec Backtest
+</td>
+<td valign="top">
+40 VN-listed equities<br>
+2023–2026, daily prices<br>
+Walk-forward VaR/CVaR<br>
+6-sector diverse basket
+</td>
+<td valign="top">
+VCB's Student-t GARCH(1,1) VaR passed the Kupiec calibration test at both 95% and 99% — but extending the exact same specification to a 6-stock, 6-sector basket showed <b>half the basket (VIC, VNM, GAS) failed calibration</b> at the 95% level.
+<br><br>
+A single fixed GARCH configuration does not generalize uniformly across VN equities — fitted tail-thickness (Student-t ν) ranged from 2.5 to 5.5 across all 40 stocks tested, arguing for asset-specific model validation over a one-size-fits-all approach.
+</td>
+</tr>
+<tr>
 
 <td valign="top">
 <a href="https://github.com/mihah023/Applied-Mathematics-Portfolio/tree/main/FOMC-Event-Study">
