@@ -141,6 +141,41 @@ My contribution: <b>Insert</b> function + frontend pages.
 </td>
 
 </tr>
+<tr>
+
+<td valign="top">
+<a href="https://github.com/mihah023/Quantitative-Finance-Portfolio/tree/main/03-portfolio-optimization-mvo-risk-parity">
+<b>📊 Markowitz MVO vs. Risk Parity: Portfolio Construction & Backtest</b>
+</a>
+<br><br>
+<sub>
+<a href="https://github.com/mihah023/Quantitative-Finance-Portfolio/blob/main/03-portfolio-optimization-mvo-risk-parity/notebooks/portfolio_optimization.ipynb">
+Notebook ↗
+</a>
+</sub>
+</td>
+
+<td valign="top">
+Python<br>
+Convex Optimization (cvxpy)<br>
+Equal Risk Contribution (SciPy)<br>
+Walk-Forward Backtest
+</td>
+
+<td valign="top">
+40 VN-listed equities<br>
+2023–2026, daily prices<br>
+Monthly rebalancing<br>
+6-month lookback window
+</td>
+
+<td valign="top">
+Out-of-sample, the Max-Sharpe portfolio's realized Sharpe ratio (<b>1.96</b>) diverged sharply from its Global Min-Variance (<b>-0.12</b>) and Equal-Weight (<b>0.81</b>) counterparts, concentrating ~50% of weight in a single name — a textbook illustration of mean-variance optimization's sensitivity to expected-return estimation error.
+<br><br>
+Risk Parity, which ignores return forecasts entirely and equalizes risk contribution instead, tracked the Equal-Weight benchmark far more closely (<b>16.7% vs. 19.4%</b> annualized return) than either tracked Max-Sharpe — consistent with the theory that covariance estimates are more stable than return estimates.
+</td>
+
+</tr>
 
 <tr>
 
