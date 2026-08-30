@@ -108,6 +108,39 @@ GNN-PPO improved return by approximately <b>16.6 percentage points</b> over PPO-
 </td>
 
 </tr>
+<tr>
+
+<td valign="top">
+<a href="https://github.com/mihah023/Applied-Mathematics-Portfolio/tree/main/03-library-management-system">
+<b>📚 Library Management System</b>
+</a>
+<br><br>
+<sub>
+🎓 Coursework Project (3-person team)
+</sub>
+</td>
+
+<td valign="top">
+PHP (`mysqli`)<br>
+MySQL<br>
+Vanilla JavaScript<br>
+Prepared Statements
+</td>
+
+<td valign="top">
+4-table relational schema<br>
+(category, author, storage, book)<br>
+Dynamic CRUD interface<br>
+Multi-table JOIN reporting
+</td>
+
+<td valign="top">
+Built a whitelist-validated, injection-safe CRUD backend with dynamically generated forms and a normalized <b>1:N author–book relationship</b> (refactored from a fragile text-matching join to a proper foreign key).
+<br><br>
+My contribution: <b>Insert</b> function + frontend pages.
+</td>
+
+</tr>
 
 <tr>
 
