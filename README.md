@@ -238,13 +238,17 @@ Sensitivity analysis
 
 </tbody>
 </table>
----
+
 
 ## 📚 Research Interests
 
-**Quantitative Finance** · **Financial Risk Modeling** · **Financial Econometrics** ·  
-**Time Series Analysis** · **Portfolio Optimization** · **Machine Learning for Finance** ·  
-**Reinforcement Learning for Portfolio Allocation**
+- Quantitative Finance
+- Financial Risk Modeling
+- Financial Econometrics
+- Time Series Analysis
+- Portfolio Optimization
+- Machine Learning for Finance
+- Reinforcement Learning for Portfolio Allocation
 
 
 ---
