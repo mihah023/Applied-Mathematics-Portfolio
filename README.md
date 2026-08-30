@@ -102,9 +102,9 @@ FRED + Yahoo Finance
 </td>
 
 <td valign="top">
-The market reacts significantly to Fed rate changes (<b>p = 0.034</b>), but AAPL shows <b>no significant stock-specific abnormal return</b> across three independent tests.
+Market-wide volatility rises significantly around FOMC events (permutation p≈0.000, Mann-Whitney p=0.021), while <b>no individual asset (AAPL/TLT/XLF) shows a significant abnormal return</b> across three independent tests.
 <br><br>
-Corrected a methodology issue that initially overstated significance (<b>p = 0.0007 → 0.034</b>).
+Identified a pooling artifact that had overstated an earlier ARCH-LM significance test (pooled p&lt;0.0001 vs. only 10–16% of per-window estimates actually showing ARCH effects).
 </td>
 
 </tr>
