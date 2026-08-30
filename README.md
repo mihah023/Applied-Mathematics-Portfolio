@@ -8,7 +8,7 @@
 
 🏆 **Academic Scholarship:** 2025–2026 Academic Year
 
-🎯 **Target Role:** Quantitative Researcher / Quantitative Analyst Intern
+🎯 **Target Role:** Quantitative Researcher / Quantitative Analyst / Risk Analyst / Financial Analyst Intern
 
 ---
 
@@ -28,6 +28,8 @@ I'm an Applied Mathematics student focused on Financial Engineering & Risk Manag
 * **Data Sources:** FRED (Federal Reserve Economic Data), Yahoo Finance (`yfinance`), public market datasets
 * **Spreadsheets & Database:** Excel, SQL
 
+---
+## 🎯 Research Interests Quantitative Finance · Financial Risk Modeling · Financial Econometrics · Time Series Analysis · Portfolio Optimization · Machine Learning for Finance
 ---
 
 ## 📂 Portfolio Projects 📂
