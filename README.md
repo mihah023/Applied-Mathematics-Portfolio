@@ -46,12 +46,12 @@ I'm an Applied Mathematics student focused on Financial Engineering & Risk Manag
 <tr>
 
 <td valign="top">
-<a href="[https://github.com/mihah023/Quantitative-Finance-Portfolio/tree/main/02-fomc-event-study]">
+<a href="https://github.com/mihah023/Applied-Mathematics-Portfolio/tree/main/FOMC-Event-Study">
 <b>🏛️ Fed Rate-Change Event Study</b>
 </a>
 <br><br>
 <sub>
-<a href="[https://github.com/mihah023/Quantitative-Finance-Portfolio/blob/main/02-fomc-event-study/notebooks/fomc_event_study_clean.ipynb]">
+<a href="https://github.com/mihah023/Applied-Mathematics-Portfolio/blob/main/FOMC-Event-Study/fomc_event_study_final_clean.ipynb">
 Notebook ↗
 </a>
 </sub>
@@ -111,7 +111,7 @@ GNN-PPO improved return by approximately <b>16.6 percentage points</b> over PPO-
 <tr>
 
 <td valign="top">
-<a href="https://github.com/mihah023/Applied-Mathematics-Portfolio/tree/main/03-library-management-system">
+<a href="https://github.com/mihah023/Applied-Mathematics-Portfolio/tree/main/Library-Management-System">
 <b>📚 Library Management System</b>
 </a>
 <br><br>
@@ -144,12 +144,12 @@ My contribution: <b>Insert</b> function + frontend pages.
 <tr>
 
 <td valign="top">
-<a href="https://github.com/mihah023/Quantitative-Finance-Portfolio/tree/main/03-portfolio-optimization-mvo-risk-parity">
+<a href="https://github.com/mihah023/Applied-Mathematics-Portfolio/tree/main/Portfolio-Optimization">
 <b>📊 Markowitz MVO vs. Risk Parity: Portfolio Construction & Backtest</b>
 </a>
 <br><br>
 <sub>
-<a href="https://github.com/mihah023/Quantitative-Finance-Portfolio/blob/main/03-portfolio-optimization-mvo-risk-parity/notebooks/portfolio_optimization.ipynb">
+<a href="https://github.com/mihah023/Applied-Mathematics-Portfolio/blob/main/Portfolio-Optimization/notebooks/portfolio_optimization.ipynb">
 Notebook ↗
 </a>
 </sub>
