@@ -138,39 +138,7 @@ GNN-PPO improved return by approximately <b>16.6 percentage points</b> over PPO-
 </td>
 
 </tr>
-<tr>
 
-<td valign="top">
-<a href="https://github.com/mihah023/Applied-Mathematics-Portfolio/tree/main/Library-Management-System">
-<b>📚 Library Management System</b>
-</a>
-<br><br>
-<sub>
-🎓 Coursework Project (3-person team)
-</sub>
-</td>
-
-<td valign="top">
-PHP (`mysqli`)<br>
-MySQL<br>
-Vanilla JavaScript<br>
-Prepared Statements
-</td>
-
-<td valign="top">
-4-table relational schema<br>
-(category, author, storage, book)<br>
-Dynamic CRUD interface<br>
-Multi-table JOIN reporting
-</td>
-
-<td valign="top">
-Built a whitelist-validated, injection-safe CRUD backend with dynamically generated forms and a normalized <b>1:N author–book relationship</b> (refactored from a fragile text-matching join to a proper foreign key).
-<br><br>
-My contribution: <b>Insert</b> function + frontend pages.
-</td>
-
-</tr>
 <tr>
 
 <td valign="top">
@@ -203,6 +171,40 @@ Monthly rebalancing<br>
 Out-of-sample, the Max-Sharpe portfolio's realized Sharpe ratio (<b>1.96</b>) diverged sharply from its Global Min-Variance (<b>-0.12</b>) and Equal-Weight (<b>0.81</b>) counterparts, concentrating ~50% of weight in a single name — a textbook illustration of mean-variance optimization's sensitivity to expected-return estimation error.
 <br><br>
 Risk Parity, which ignores return forecasts entirely and equalizes risk contribution instead, tracked the Equal-Weight benchmark far more closely (<b>16.7% vs. 19.4%</b> annualized return) than either tracked Max-Sharpe — consistent with the theory that covariance estimates are more stable than return estimates.
+</td>
+
+</tr>
+
+<tr>
+
+<td valign="top">
+<a href="https://github.com/mihah023/Applied-Mathematics-Portfolio/tree/main/Library-Management-System">
+<b>📚 Library Management System</b>
+</a>
+<br><br>
+<sub>
+🎓 Coursework Project (3-person team)
+</sub>
+</td>
+
+<td valign="top">
+PHP (`mysqli`)<br>
+MySQL<br>
+Vanilla JavaScript<br>
+Prepared Statements
+</td>
+
+<td valign="top">
+4-table relational schema<br>
+(category, author, storage, book)<br>
+Dynamic CRUD interface<br>
+Multi-table JOIN reporting
+</td>
+
+<td valign="top">
+Built a whitelist-validated, injection-safe CRUD backend with dynamically generated forms and a normalized <b>1:N author–book relationship</b> (refactored from a fragile text-matching join to a proper foreign key).
+<br><br>
+My contribution: <b>Insert</b> function + frontend pages.
 </td>
 
 </tr>
