@@ -27,6 +27,7 @@ I'm an Applied Mathematics student focused on Financial Engineering & Risk Manag
 * **Machine Learning:** Graph Neural Networks, Reinforcement Learning, PPO, PyTorch
 * **Data Sources:** FRED (Federal Reserve Economic Data), Yahoo Finance (`yfinance`), public market datasets
 * **Spreadsheets & Database:** Excel, SQL
+
 ---
 
 ## 📂 Portfolio Projects 📂
@@ -45,48 +46,12 @@ I'm an Applied Mathematics student focused on Financial Engineering & Risk Manag
 <tr>
 
 <td valign="top">
-<a href="https://github.com/mihah023/Quantitative-Finance-Portfolio/tree/main/01-volatility-var-model">
-<b>📉 Volatility Forecasting & VaR/CVaR Model</b>
-</a>
-<br><br>
-<sub>
-<a href="https://github.com/mihah023/Quantitative-Finance-Portfolio/blob/main/01-volatility-var-model/notebooks/var_cvar_analysis.ipynb">
-Notebook ↗
-</a>
-</sub>
-</td>
-
-<td valign="top">
-Python<br>
-GARCH(1,1)<br>
-VaR / Expected Shortfall<br>
-Kupiec Backtest
-</td>
-
-<td valign="top">
-AAPL daily returns<br>
-3 competing VaR models<br>
-Rolling 250-day windows<br>
-99% confidence level
-</td>
-
-<td valign="top">
-All three 99% VaR models pass the Kupiec backtest, but <b>GARCH reacts fastest to volatility clustering</b>, while Historical Simulation VaR lags by design.
-<br><br>
-Demonstrates the full risk-model lifecycle: estimate → forecast → <b>formally backtest</b>.
-</td>
-
-</tr>
-
-<tr>
-
-<td valign="top">
 <a href="https://github.com/mihah023/Quantitative-Finance-Portfolio/tree/main/02-fomc-event-study">
 <b>🏛️ Fed Rate-Change Event Study</b>
 </a>
 <br><br>
 <sub>
-<a href="FOMC-Event-Study">
+<a href="https://github.com/mihah023/Quantitative-Finance-Portfolio/blob/main/02-fomc-event-study/notebooks/fomc_event_study_clean.ipynb">
 Notebook ↗
 </a>
 </sub>
@@ -177,11 +142,11 @@ Sensitivity analysis
 ---
 ## 📜 Relevant Certifications & Credentials
 
-Yes, I know this list is already getting a little long—and honestly, it’s probably going to keep growing! 🧠✨ I’m just someone who gets curious about new things and enjoys learning along the way, whether it’s a new tool, a new concept, or another data problem that makes me go “wait… how does this work?” 🧩
+Yes, I know this list is already getting a little long—and honestly, it's probably going to keep growing! 🧠✨ I'm just someone who gets curious about new things and enjoys learning along the way, whether it's a new tool, a new concept, or another data problem that makes me go "wait… how does this work?" 🧩
 
-Maybe if you check back in a few years, this section will be ridiculously long. 😂 But for now, I’m still learning, experimenting, and figuring things out one course (and one bug) at a time. 💻
+Maybe if you check back in a few years, this section will be ridiculously long. 😂 But for now, I'm still learning, experimenting, and figuring things out one course (and one bug) at a time. 💻
 
-Consider this just a little preview. There’s still a lot more I want to learn! 🚀
+Consider this just a little preview. There's still a lot more I want to learn! 🚀
 
 | Certification | Issuing Organization | Status / Completion | Link |
 | :--- | :--- | :--- | :---: |
