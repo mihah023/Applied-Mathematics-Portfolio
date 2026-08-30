@@ -51,7 +51,7 @@ I'm an Applied Mathematics student focused on Financial Engineering & Risk Manag
 </a>
 <br><br>
 <sub>
-<a href="https://github.com/mihah023/Applied-Mathematics-Portfolio/blob/main/FOMC-Event-Study/fomc_event_study_final_clean.ipynb">
+<a href="https://github.com/mihah023/Applied-Mathematics-Portfolio/blob/main/FOMC-Event-Study/fomc_event_study_final_clean%20(1).ipynb">
 Notebook ↗
 </a>
 </sub>
