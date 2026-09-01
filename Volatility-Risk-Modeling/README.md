@@ -4,33 +4,63 @@ This project applies GARCH(1,1) modeling to VCB stock returns and uses the model
 
 The project started with a basic analysis of the return distribution and then developed into a complete risk modeling process, including stationarity checks, volatility modeling, walk-forward forecasting, and VaR backtesting.
 
+## Hypotheses Tested
+
+A quick reference for what each test's null hypothesis (H0) actually claims, before diving into results:
+
+| Test | H0 (null hypothesis) | Rejecting H0 means... |
+|---|---|---|
+| ADF | The return series has a unit root (non-stationary) | Series is stationary — safe to model with GARCH |
+| Jarque-Bera | Returns are normally distributed | Returns are skewed / fat-tailed — motivates Student-t errors |
+| ARCH-LM | Squared returns are not autocorrelated (no volatility clustering) | Volatility clustering is present — motivates GARCH over a constant-variance model |
+| Kupiec | The VaR breach rate equals the stated confidence level (e.g. 5%) | Breach count is significantly off — VaR is miscalibrated |
+| Christoffersen | VaR breaches are independent over time | Breaches cluster together — VaR is miscalibrated even if the total count looks right |
+| Conditional Coverage | Breaches have the correct rate AND occur independently | At least one of the two conditions above is violated |
+
 ## What I Did
 
 ### 1. Return Distribution & Stationarity Analysis
 
 I first examined VCB returns using:
 
-- Augmented Dickey-Fuller (ADF) test, to check the series is stationary before modeling
-- Histogram + Q-Q plot
-- Skewness and kurtosis
-- Jarque-Bera normality test
-- ARCH-LM test
+**Augmented Dickey-Fuller (ADF) test** — checks whether the series is stationary before modeling.
+- H0: the return series has a unit root (is non-stationary).
+- H1: the series is stationary.
 
-The results showed VCB returns are stationary (ADF p ≈ 0.000000), not normally distributed, and exhibit fat tails and volatility clustering. The Q-Q plot makes the fat tails visible directly — points curve away from the normal line at both ends. These findings motivated the use of a GARCH model.
+Result: ADF statistic = -25.62, p ≈ 0.000000 → H0 rejected. Returns are stationary.
+
+**Jarque-Bera test** — checks whether returns are normally distributed, using skewness (S) and kurtosis (K).
+- H0: returns are normally distributed (S=0, K=3).
+- H1: returns are not normally distributed.
+
+JB = (n/6) * (S^2 + (K-3)^2 / 4)
+
+Result: JB = 5369.5, p ≈ 0.000000 → H0 rejected decisively. Skewness -0.59, excess kurtosis 13.19 (very fat-tailed).
+
+**ARCH-LM test** — checks whether squared returns are autocorrelated (volatility clustering).
+- H0: no autocorrelation in squared returns (no ARCH effects).
+- H1: squared returns are autocorrelated (volatility clustering present).
+
+Result: statistic = 39.00 (5 lags), p ≈ 0.000000 → H0 rejected. Volatility clustering confirmed.
+
+I also plotted a histogram + Q-Q plot against the normal distribution. The Q-Q plot makes the fat tails visible directly — points curve away from the normal line at both ends, with one point (a ~-13% return) sitting well off the line by itself.
+
+**Together, these three results are the actual justification for GARCH**: stationary (model assumptions hold), non-normal (a normal model would understate risk), volatility-clustered (a constant-variance model would miss real time-varying risk).
 
 ### 2. GARCH(1,1) Model
 
-I fitted a GARCH(1,1) model with Student-t errors using the `arch` package, and compared it against a Normal-GARCH alternative on log-likelihood, AIC, and BIC to confirm Student-t is actually the better fit rather than just assuming it:
+sigma_t^2 = omega + alpha * epsilon_{t-1}^2 + beta * sigma_{t-1}^2
+
+I fitted this with Student-t errors using the `arch` package, and compared it against a Normal-GARCH alternative on log-likelihood, AIC, and BIC to confirm Student-t is actually the better fit rather than just assuming it:
 
 | | Normal-GARCH | Student-t-GARCH |
 |---|---:|---:|
 | AIC | 2592.36 | **2349.16** |
 | BIC | 2610.82 | **2372.24** |
 
-The estimated degrees of freedom parameter was ν ≈ 3.14, consistent with the heavy-tailed behavior observed in the return data.
+Student-t wins on both. Fitted parameters: omega=0.563, alpha=0.452, beta=0.419 (persistence alpha+beta=0.871, stationary), nu=3.14 — a low nu confirms independently what Jarque-Bera already found.
 
 ### 3. VaR and CVaR Forecasting
-
 
 Using the fitted GARCH model, I produced one-day-ahead VaR and CVaR forecasts at the 95% and 99% confidence levels, walk-forward — only information available before each forecast date was used, to avoid look-ahead bias.
 
@@ -38,9 +68,36 @@ I initially refit the GARCH model every 20 days to save computation, but found t
 
 ### 4. VaR Backtesting
 
-I used two tests: the **Kupiec test** (checks if the total number of breaches matches the expected rate) and the **Christoffersen independence test** (checks if breaches cluster in time instead of happening independently — a model can have the right breach count but still fail this if breaches bunch together).
+**Kupiec test (unconditional coverage)** — checks whether the total number of breaches matches the expected rate.
+- H0: the observed breach rate equals the expected confidence level (e.g. 5%).
+- H1: the observed breach rate differs significantly from the expected level.
 
-For VCB:
+**Christoffersen independence test (1998)** — checks whether VaR breaches occur independently over time rather than clustering together.
+- H0: VaR breaches are independent over time.
+- H1: VaR breaches are dependent and tend to cluster.
+
+The test is based on the transition probabilities between two states: `0` (no breach) and `1` (breach).
+- pi_01: probability of a breach after a non-breach day
+- pi_11: probability of a breach after a breach day
+- pi_2: unconditional probability of a breach
+
+Under H0, today's breach status should not depend on yesterday's status, so pi_01 = pi_11 = pi_2. The test compares the likelihood under this independence restriction against the unrestricted likelihood. Under H0, the restricted likelihood is:
+
+L0 = (1 - pi_2)^(n00+n10) * pi_2^(n01+n11)
+
+where n_ij is the number of transitions from state i to state j. In particular, **n11 captures consecutive VaR breaches** — this is exactly why the test can catch clustering that a simple breach-rate check (Kupiec) would miss entirely.
+
+If one of the states doesn't occur at all (e.g. zero breaches in the sample), some transition probabilities can't be estimated and the test returns `NaN` — this is a limitation of the statistical calculation, not a coding error.
+
+*Note: my first implementation of this formula had a real bug (grouped exponents by starting state instead of ending state), caught on a second review and confirmed with `sympy` before trusting the corrected numbers — it had made VCB look considerably worse than it actually was.*
+
+**Christoffersen conditional coverage test** — combines the Kupiec and independence tests.
+- H0: VaR breaches have the correct unconditional frequency AND occur independently over time.
+- H1: at least one of these two conditions is violated.
+
+LR_cc = LR_uc + LR_ind, compared against a chi-square distribution with 2 degrees of freedom.
+
+**Results for VCB:**
 
 | Metric | VaR 95% | VaR 99% |
 |---|---:|---:|
@@ -52,8 +109,6 @@ For VCB:
 
 VCB passes all three tests at both confidence levels — no p-value below 0.05.
 
-(Note: my first version of the Christoffersen test had a formula bug that made VCB look much worse than it actually was. Caught it on a second review and verified the fix with `sympy` before trusting the corrected numbers.)
-
 ## Testing Other Stocks
 
 After VCB, I applied the same checks and the same daily-refit VaR backtest to **all 40 stocks** in the dataset, not just a sample.
@@ -62,7 +117,6 @@ After VCB, I applied the same checks and the same daily-refit VaR backtest to **
 - ADF: 40/40 stocks (100%) stationary
 - Jarque-Bera: 40/40 stocks (100%) non-normal
 - ARCH-LM: 35/40 stocks (88%) show significant volatility clustering — 5 stocks (HCM, HAH, VSC, FPT, REE) don't
-
 
 **VaR backtest across all 40:**
 
@@ -96,7 +150,6 @@ Most stocks calibrate well on both breach count and timing. The 95% level shows 
 The project uses daily closing prices for 40 Vietnamese listed stocks from **2023-03-31 to 2026-03-31**.
 
 VCB is used as the main example, while the other stocks are used to compare how well the same risk model performs across different assets.
-
 
 ## Limitations
 
