@@ -8,9 +8,7 @@
   <img src="https://img.shields.io/badge/Jupyter-F37626?style=flat-square&logo=jupyter&logoColor=white" alt="Jupyter" height="28" />
 </p>
 
-<p align="center">
-  <img src="outputs/var_backtest_vcb.png" alt="VCB actual returns vs. daily-refit GARCH VaR forecasts" width="100%" />
-</p>
+
 
 ---
 
