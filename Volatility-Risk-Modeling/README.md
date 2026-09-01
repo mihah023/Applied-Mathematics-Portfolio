@@ -1,4 +1,5 @@
 # 📉 GARCH Volatility Modeling & VaR Backtesting (with CVaR Forecasting)
+
 <p align="left">
   <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python" height="28" />
   <img src="https://img.shields.io/badge/pandas-%23150458.svg?style=flat-square&logo=pandas&logoColor=white" alt="pandas" height="28" />
@@ -12,118 +13,309 @@
 </p>
 
 ---
+
 ## 📌 Executive Summary
+
 I wanted to see how well a GARCH model can capture changing stock volatility, and whether those forecasts are actually useful for measuring downside risk — not just theoretically, but when you formally check them against what happened.
 
 I started with **VCB** as a case study, using GARCH(1,1) with both Normal and Student-t innovations to forecast one-day-ahead **VaR and CVaR**. I then backtested the VaR forecasts using the **Kupiec** and **Christoffersen** tests before extending the analysis to 40 Vietnamese stocks.
 
-The main takeaway wasn't simply that "GARCH works." The more interesting result was that **breach frequency and breach timing tell different stories**: 88% of stocks pass the Kupiec test at the 95% level, but only 62% pass the stricter conditional-coverage test. I also caught and fixed an implementation issue in my original walk-forward procedure, where the VaR forecast was unintentionally staying frozen between refits.
+The main takeaway wasn't simply that "GARCH works." The more interesting result was that **breach frequency and breach timing tell different stories**: 88% of stocks pass the Kupiec test at the 95% level, but only 62% pass the stricter conditional-coverage test.
+
+I also caught and fixed an implementation issue in my original walk-forward procedure, where the VaR forecast was unintentionally staying frozen between refits.
 
 ---
+
 ## 💻 Tech Stack
-- **Language:** Python 3
-- **Volatility Modeling:** `arch` (GARCH(1,1), Normal vs. Student-t innovations)
-- **Statistical Testing:** `scipy.stats`, `statsmodels` (ADF, Jarque-Bera, ARCH-LM)
-- **Risk Backtesting:** Kupiec (1995) unconditional coverage, Christoffersen (1998) independence, joint conditional coverage
-- **Data Wrangling:** `pandas`, `numpy`
-- **Visualization:** `matplotlib`
-- **Data:** 40 VN-listed equities, daily closing prices, 2023-03-31 to 2026-03-31 (747 trading days)
+
+* **Language:** Python 3
+* **Volatility Modeling:** `arch` — GARCH(1,1), Normal vs. Student-t innovations
+* **Statistical Testing:** `scipy.stats`, `statsmodels` — ADF, Jarque-Bera, ARCH-LM
+* **Risk Backtesting:** Kupiec (1995), Christoffersen (1998), joint conditional coverage
+* **Data Wrangling:** `pandas`, `numpy`
+* **Visualization:** `matplotlib`
+* **Verification:** `sympy`
+* **Data:** 40 Vietnamese listed equities, daily closing prices, 2023-03-31 to 2026-03-31
 
 ---
+
 ## 📁 Repository Structure
+
 ```text
 01-garch-var-cvar/
 │
 ├── data/
-│   └── vn_stock_prices_raw.csv     # 40 VN-listed equities, daily closes
+│   └── vn_stock_prices_raw.csv
 │
 ├── notebooks/
-│   └── garch_var_cvar.ipynb        # full analysis, VCB deep-dive + 40-stock extension
+│   └── garch_var_cvar.ipynb
 │
 └── outputs/
-    ├── return_distribution.png
-    ├── conditional_volatility.png
-    ├── garch_model_comparison.png
+    ├── return_distribution_qq.png
+    ├── garch_conditional_volatility.png
     ├── var_backtest_vcb.png
-    ├── tail_persistence_40stocks.png
+    ├── cross_sectional_tail_comparison.png
     └── full_40stock_var_backtest_corrected.csv
 ```
 
 ---
+
 ## 📂 Dataset Overview
-### Key Metrics (VCB, the primary case study)
+
+### Key Metrics — VCB
+
+VCB is used as the primary case study before extending the analysis to the full 40-stock universe.
+
 * **Sample:** 746 daily log returns, 2023-04-03 to 2026-03-31
-* **Mean daily return:** -0.0059% | **Std dev:** 1.50%
-* **Skewness:** -0.59 | **Excess kurtosis:** 13.19 — far fatter-tailed than a normal distribution
-* **Out-of-sample backtest window:** 246 daily forecasts (2025-04-03 to 2026-03-31), 500-day rolling training window, **refit every single day**
+* **Mean daily return:** -0.0059%
+* **Standard deviation:** 1.50%
+* **Skewness:** -0.59
+* **Excess kurtosis:** 13.19
+* **Out-of-sample period:** 246 daily forecasts
+* **Training window:** 500 trading days
+* **Refit frequency:** Daily
 
 ---
-## 🚨 Methodology Note
-> [!WARNING]
-> An earlier version of this notebook refit the GARCH model every 20 days but called `.forecast()` on that same, unrefit model in between. An `arch` model's forecast doesn't change unless you refit it — so the VaR line was effectively **frozen for 19 out of every 20 days**, not a genuine walk-forward forecast. This version refits daily using a trailing 500-day window (~5 minutes for all 40 stocks), so every forecast reflects everything known up to that point. The chart above should visibly track volatility day-to-day — compare that to a flat, stair-stepping line, which is what the bug produced.
+
+## 🔬 Modeling Framework
+
+The project follows a complete volatility and downside-risk modeling pipeline:
+
+**Return Diagnostics → GARCH Volatility Model → VaR/CVaR Forecasting → Walk-Forward Backtesting → Cross-Stock Comparison**
+
+### Why GARCH?
+
+The diagnostics answer three different questions:
+
+| Diagnostic                 | What it checks                    | Modeling implication                                  |
+| -------------------------- | --------------------------------- | ----------------------------------------------------- |
+| **ADF**                    | Is the return series stationary?  | Confirms the return series is stationary              |
+| **ARCH-LM**                | Is there volatility clustering?   | Provides evidence for conditional volatility modeling |
+| **Jarque-Bera + Q-Q plot** | Are returns normally distributed? | Motivates heavy-tailed innovations                    |
+
+For VCB:
+
+* ADF statistic = **-25.62**, p < 0.000001 → stationary
+* ARCH-LM statistic = **39.00**, p < 0.000001 → significant ARCH effects
+* Jarque-Bera = **5369.5**, p < 0.000001 → strong departure from normality
+
+The key point is that these tests support **different modeling decisions** rather than serving as one blanket justification for GARCH.
 
 ---
+
 ## 📊 Key Findings & Insights
 
-**1. VCB returns are stationary, heavy-tailed, and show clear volatility clustering.** The ADF test confirms stationarity (p<0.000001) — the precondition GARCH's constant-mean assumption needs. The **ARCH-LM test is what actually motivates using GARCH** in the first place: it finds significant volatility clustering (p<0.000001), meaning big moves bunch together in time rather than being scattered randomly. On top of that, the Jarque-Bera test and Q-Q plot show the return distribution is far from normal (excess kurtosis = 13.19).
+### 1. VCB returns are stationary, heavy-tailed, and show clear volatility clustering
 
-![Return distribution vs. Normal](outputs/return_distribution.png)
+The return series is stationary, but the more important evidence for volatility modeling comes from the **ARCH-LM test**, which finds significant conditional heteroskedasticity.
 
-* **Insight:** Before choosing a model, I wanted to check whether the data actually supported its assumptions instead of starting with GARCH by default — stationarity, volatility clustering, and fat tails are three separate checks, not one.
+The Jarque-Bera test and Q-Q plot also show that VCB returns have much heavier tails than a normal distribution, with **excess kurtosis of 13.19**.
 
-**2. Student-t GARCH wins on every metric, not just intuition.** Comparing Normal-GARCH vs. Student-t-GARCH head to head: Student-t has higher log-likelihood (-1169.6 vs. -1292.2) and lower AIC (2349.2 vs. 2592.4) and BIC (2372.2 vs. 2610.8) — a clean sweep.
+![Return distribution and Q-Q plot](outputs/return_distribution_qq.png)
 
-![Normal-GARCH vs Student-t-GARCH model comparison](outputs/garch_model_comparison.png)
-
-* **Insight:** The heavy-tailed distribution wasn't just something I assumed from the data — the Student-t specification also performed better when the two models were actually compared side by side.
-
-**3. After fixing the stale-forecast bug, VCB's VaR forecasts were not rejected by the backtests at either the 95% or 99% level.** Out of 246 out-of-sample days: 16 breaches at VaR 95% (6.50% vs. an expected 5%, Kupiec p=0.30) and 5 breaches at VaR 99% (2.03% vs. an expected 1%, Kupiec p=0.15). The Christoffersen independence test also doesn't reject at either level (p=0.070 and p=0.058 — the 99% one sits close enough to 0.05 that I'd call it a pass with a note, not a comfortable margin), and the joint conditional-coverage test agrees (p=0.113 and p=0.060).
-* **Insight:** Passing Kupiec alone isn't enough — a model can get the total number of breaches roughly right while still failing to capture *when* those breaches happen.
-
-![Conditional volatility](outputs/conditional_volatility.png)
-
-### 🚨 The main takeaway: breach frequency ≠ breach independence
-
-**4. Extending the same daily-refit backtest to all 40 VN stocks is where the real story is.** The Kupiec-only pass rate looks solid — 88% at VaR 95%, 90% at VaR 99%. But requiring the *joint* conditional-coverage test (Kupiec + Christoffersen together) drops the 95% pass rate all the way to **62%** (25/40), a much bigger gap than at the 99% level (88%, 35/40).
-
-**This was the most interesting result for me:** getting the total number of VaR breaches approximately right does not necessarily mean the model captures how risk evolves through time. A single fixed GARCH(1,1)-t specification does not calibrate equally well across every stock — which means a real risk system built this way would need to check each asset individually, not assume one backtest generalizes to the whole universe.
-
-**5. Some stocks push GARCH persistence to the boundary — but I don't want to over-interpret it.** 10 of 40 stocks (`KDC`, `TLH`, `CNG`, `KDH`, `VIC`, `DGC`, `CMG`, `VHM`, `GAS`, `VSC`) show persistence (α+β) at or above 0.9999, right at the edge of GARCH's stationarity boundary.
-
-![Tail fatness and persistence across 40 stocks](outputs/tail_persistence_40stocks.png)
-
-With only about 2.4 years of data, I don't think this is enough evidence to claim these stocks have genuinely permanent volatility persistence — it could just as easily be the optimizer converging near a boundary on a fairly short sample. A longer sample or an explicit IGARCH comparison would be needed before reading much into it.
-* **Insight:** One thing I learned here is that a model output can be statistically interesting without necessarily having an obvious economic interpretation attached to it yet.
+**Insight:** Before choosing a model, I wanted to check whether the data actually supported its assumptions instead of starting with GARCH by default — stationarity, volatility clustering, and fat tails are three separate checks, not one.
 
 ---
-## 📈 Results Tables
 
-### VCB — Backtest Summary (246 out-of-sample days)
+### 2. Student-t GARCH provides a substantially better fit than Normal-GARCH
 
-| Level | Breaches | Breach Rate | Expected Rate | Kupiec p | Christoffersen p | Conditional Coverage p |
-|:---|:---:|:---:|:---:|:---:|:---:|:---:|
-| VaR 95% | 16 | 6.50% | 5.00% | 0.2999 | 0.0699 | 0.1131 |
-| VaR 99% | 5 | 2.03% | 1.00% | 0.1533 | 0.0579 | 0.0598 |
+I fitted GARCH(1,1) under both Normal and Student-t innovations and compared their fit using log-likelihood, AIC, and BIC.
 
-### Universe-Wide Diagnostics (40 stocks)
+|                | Normal-GARCH | Student-t-GARCH |
+| -------------- | -----------: | --------------: |
+| Log-likelihood |      -1292.2 |     **-1169.6** |
+| AIC            |       2592.4 |      **2349.2** |
+| BIC            |       2610.8 |      **2372.2** |
 
-| Test | Result |
-|:---|:---|
-| ADF (stationarity) | 40/40 stocks stationary (100%) |
-| Jarque-Bera (normality) | 40/40 stocks reject normality (100%) |
-| ARCH-LM (volatility clustering) | 35/40 stocks show significant clustering (88%) |
-| GARCH(1,1)-t convergence | 40/40 converged (100%) |
+Student-t provides the better fit across all three metrics.
 
-### Universe-Wide VaR Calibration (40 stocks, daily-refit backtest)
+For VCB, the fitted Student-t GARCH parameters are:
 
-| Level | Kupiec-Only Pass Rate | Conditional-Coverage Pass Rate |
-|:---|:---:|:---:|
-| VaR 95% | 35/40 (88%) | 25/40 (62%) |
-| VaR 99% | 36/40 (90%) | 35/40 (88%) |
+* **ω = 0.563**
+* **α = 0.452**
+* **β = 0.419**
+* **α + β = 0.871**
+* **ν ≈ 3.14**
+
+The persistence estimate **α + β = 0.871** indicates persistent but mean-reverting conditional volatility under the standard GARCH(1,1) framework.
+
+The estimated degrees of freedom **ν ≈ 3.14** also imply substantially heavier tails than a normal distribution, consistent with the return diagnostics.
+
+![GARCH conditional volatility](outputs/garch_conditional_volatility.png)
+
+**Insight:** The heavy-tailed distribution wasn't just something I assumed from the data — the Student-t specification also performed better when the two models were actually compared side by side.
 
 ---
-## 🔍 Next Steps (What I Would Do If I Had More Time)
-- **Look at the worst-calibrated names individually** (e.g. `KDC`, `NLG`, `KDH` — lowest Kupiec p-values at the 95% level) instead of treating the 62% pass rate as a single number; a stock-specific volatility regime could explain some of these failures.
-- **Run a formal CVaR backtest.** CVaR is forecast at every step here, but only VaR is validated against actuals — Expected Shortfall needs its own backtesting approach (e.g. the Acerbi-Székely test) before I'd call it "validated" rather than just "forecast."
-- **Test whether an IGARCH specification fits significantly better** for the 10 stocks sitting at the persistence boundary, instead of treating α+β≈1 as the final word for those names.
-- **Extend the sample period** beyond ~2.4 years — a longer history would make both the persistence-boundary finding and the cross-sectional calibration results more reliable.
+
+### 3. Walk-forward VaR forecasting required fixing a subtle implementation bug
+
+For each forecast date, the model uses only information available up to that date to avoid look-ahead bias.
+
+I initially refit the GARCH model every 20 days to reduce computation time. However, I found that repeatedly calling `.forecast()` on the same **unrefit** model produced the same variance forecast.
+
+This meant the VaR forecast was effectively **frozen for 19 out of every 20 days**.
+
+I verified the behavior directly and changed the procedure to **daily refitting with a trailing 500-day window**. The corrected implementation takes approximately five minutes for the full 40-stock universe.
+
+![VCB actual returns vs. daily-refit GARCH VaR forecasts](outputs/var_backtest_vcb.png)
+
+**Insight:** This was an important modeling lesson: a backtest can look technically sophisticated while still being wrong if the walk-forward procedure is not actually updating the model.
+
+---
+
+### 4. VCB VaR forecasts were not rejected by the backtests
+
+Using 246 out-of-sample forecasts:
+
+| Level   | Breaches | Breach Rate | Expected Rate | Kupiec p | Christoffersen p | Conditional Coverage p |
+| ------- | -------: | ----------: | ------------: | -------: | ---------------: | ---------------------: |
+| VaR 95% |       16 |       6.50% |         5.00% |   0.2999 |           0.0699 |                 0.1131 |
+| VaR 99% |        5 |       2.03% |         1.00% |   0.1533 |           0.0579 |                 0.0598 |
+
+At the 5% significance level, VCB is **not rejected** by Kupiec, Christoffersen, or the joint conditional-coverage test at either confidence level.
+
+However, several p-values are relatively close to 0.05, so I would interpret this as **“not rejected” rather than evidence of perfect calibration**.
+
+**Insight:** Passing Kupiec alone isn't enough — a model can get the total number of breaches roughly right while still failing to capture **when** those breaches happen.
+
+---
+
+## 🚨 The Main Takeaway: Breach Frequency ≠ Breach Independence
+
+### 5. The cross-stock results reveal a bigger calibration problem
+
+After the VCB case study, I applied the same daily-refit procedure to **all 40 stocks**.
+
+### Cross-Stock Diagnostics
+
+| Test                     | Result                                  |
+| ------------------------ | --------------------------------------- |
+| ADF                      | 40/40 stationary (100%)                 |
+| Jarque-Bera              | 40/40 reject normality (100%)           |
+| ARCH-LM                  | 35/40 show significant clustering (88%) |
+| GARCH(1,1)-t convergence | 40/40 converged (100%)                  |
+
+### VaR Backtesting Across All 40 Stocks
+
+| Level   | Kupiec-Only Pass Rate | Conditional-Coverage Pass Rate |
+| ------- | --------------------: | -----------------------------: |
+| VaR 95% |       35/40 (**88%**) |                25/40 (**62%**) |
+| VaR 99% |       36/40 (**90%**) |                35/40 (**88%**) |
+
+The difference is substantial at the 95% level:
+
+**88% pass Kupiec → only 62% pass conditional coverage.**
+
+This means that matching the overall number of breaches is considerably easier than capturing their **temporal dependence**.
+
+![Cross-sectional tail comparison](outputs/cross_sectional_tail_comparison.png)
+
+**Insight:** A single GARCH(1,1)-t specification does not calibrate equally well across every stock. This made me realize that risk models should be validated at the **individual-asset level** rather than assuming that one specification generalizes equally well across an entire universe.
+
+---
+
+### 6. Some stocks push GARCH persistence to the boundary
+
+10 of 40 stocks show persistence estimates **α + β ≥ 0.9999**:
+
+`KDC`, `TLH`, `CNG`, `KDH`, `VIC`, `DGC`, `CMG`, `VHM`, `GAS`, `VSC`
+
+These estimates sit extremely close to the GARCH stationarity boundary.
+
+With only about 2.4 years of data, I don't think this is enough evidence to claim genuinely permanent volatility persistence. The optimizer may simply be converging near a boundary on a relatively short sample.
+
+A longer history or an explicit IGARCH comparison would be needed before drawing a stronger conclusion.
+
+**Insight:** One thing I learned here is that a model output can be statistically interesting without necessarily having an obvious economic interpretation attached to it yet.
+
+---
+
+## 🧪 Understanding the Backtests
+
+The project uses two complementary VaR diagnostics.
+
+### Kupiec — Unconditional Coverage
+
+Kupiec tests whether the observed VaR breach frequency is consistent with the expected rate.
+
+For example:
+
+* VaR 95% → expected breach rate = **5%**
+* VaR 99% → expected breach rate = **1%**
+
+A rejection means the model produces significantly too many or too few breaches.
+
+### Christoffersen — Independence
+
+Christoffersen tests whether VaR breaches are independent over time.
+
+This matters because breaches can **cluster** even when the total number of breaches looks reasonable.
+
+The test examines transitions between:
+
+* `0` = no breach
+* `1` = breach
+
+In particular, **n₁₁ counts consecutive breach-to-breach transitions**, making it possible to detect clustering that Kupiec cannot detect.
+
+### Conditional Coverage
+
+The joint test combines unconditional coverage and independence:
+
+$$
+LR_{CC} = LR_{UC} + LR_{IND}
+$$
+
+Under the null hypothesis, the VaR model has both:
+
+1. the correct overall breach frequency, and
+2. independent breaches over time.
+
+This is why the conditional-coverage result is more informative than looking at the Kupiec result alone.
+
+---
+
+## ⚠️ Methodology Validation Note
+
+One additional implementation issue was found while validating the Christoffersen calculation.
+
+An earlier version contained an exponent-grouping error in the restricted likelihood calculation. I corrected the formula and independently verified the implementation symbolically using **SymPy** before producing the reported results.
+
+If one of the transition states does not occur, some transition probabilities cannot be estimated and the test can return `NaN`. This is a limitation of the statistical calculation rather than necessarily a coding error.
+
+---
+
+## 🔍 Next Steps
+
+* **Investigate the worst-calibrated stocks individually**, such as `KDC`, `NLG`, and `KDH`, instead of treating the 62% pass rate as one aggregate result.
+* **Run a formal CVaR backtest.** CVaR is forecast throughout the analysis, but it is not independently validated here.
+* **Test IGARCH** for the 10 stocks near the persistence boundary.
+* **Extend the sample period** beyond ~2.4 years to make the persistence and cross-sectional calibration results more reliable.
+* **Test alternative specifications**, such as GJR-GARCH, for stocks where asymmetric volatility or weak ARCH effects may make standard GARCH less appropriate.
+
+---
+
+## 📌 Limitations
+
+* The out-of-sample period contains only around **246 trading days**, which is relatively small for evaluating 1% VaR.
+* Daily refitting is computationally heavier than more efficient recursive updating approaches.
+* VaR is modeled parametrically using Student-t innovations; historical simulation could provide an additional robustness check.
+* Each stock is modeled independently, so this project does not estimate **portfolio-level VaR or time-varying correlations**.
+* CVaR is forecast at every step but **not independently backtested**.
+* 10/40 stocks have persistence estimates at or very close to α + β = 1; these cases require further investigation rather than a strong interpretation.
+* The same GARCH(1,1)-t specification is applied across all stocks, although some assets may require alternative volatility specifications.
+
+---
+
+## ▶️ How to Run
+
+```bash
+pip install pandas numpy scipy arch statsmodels matplotlib sympy jupyter
+jupyter notebook notebooks/garch_var_cvar.ipynb
+```
+
+---
+
+## 🛠️ Tools
+
+**Python · pandas · NumPy · SciPy · `arch` · statsmodels · Matplotlib · SymPy · Jupyter Notebook**
