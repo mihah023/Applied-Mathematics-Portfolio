@@ -8,6 +8,9 @@
   <img src="https://img.shields.io/badge/Jupyter-F37626?style=flat-square&logo=jupyter&logoColor=white" alt="Jupyter" height="28" />
 </p>
 
+<p align="center">
+  <img src="outputs/var_backtest_vcb.png" alt="VCB actual returns vs. daily-refit GARCH VaR forecasts" width="100%" />
+</p>
 
 ---
 
@@ -31,15 +34,18 @@ I also caught and fixed an implementation issue in my original walk-forward proc
 * **Risk Backtesting:** Kupiec (1995), Christoffersen (1998), joint conditional coverage
 * **Data Wrangling:** `pandas`, `numpy`
 * **Visualization:** `matplotlib`
-* **Verification:** `sympy`
 * **Data:** 40 Vietnamese listed equities, daily closing prices, 2023-03-31 to 2026-03-31
+
+> `sympy` was used separately, outside this notebook, to symbolically verify the Christoffersen
+> likelihood formula during development — it's not a runtime dependency and isn't imported by
+> the notebook itself, so it's not required to run anything here.
 
 ---
 
 ## 📁 Repository Structure
 
 ```text
-01-garch-var-cvar/
+Volatility-Risk-Modeling/
 │
 ├── data/
 │   └── vn_stock_prices_raw.csv
@@ -52,6 +58,7 @@ I also caught and fixed an implementation issue in my original walk-forward proc
     ├── garch_conditional_volatility.png
     ├── var_backtest_vcb.png
     ├── cross_sectional_tail_comparison.png
+    ├── distributional_tests_40stocks.csv
     └── full_40stock_var_backtest_corrected.csv
 ```
 
@@ -171,7 +178,7 @@ Using 246 out-of-sample forecasts:
 
 At the 5% significance level, VCB is **not rejected** by Kupiec, Christoffersen, or the joint conditional-coverage test at either confidence level.
 
-However, several p-values are relatively close to 0.05, so I would interpret this as **“not rejected” rather than evidence of perfect calibration**.
+However, several p-values are relatively close to 0.05, so I would interpret this as **"not rejected" rather than evidence of perfect calibration**.
 
 **Insight:** Passing Kupiec alone isn't enough — a model can get the total number of breaches roughly right while still failing to capture **when** those breaches happen.
 
@@ -276,7 +283,7 @@ This is why the conditional-coverage result is more informative than looking at 
 
 One additional implementation issue was found while validating the Christoffersen calculation.
 
-An earlier version contained an exponent-grouping error in the restricted likelihood calculation. I corrected the formula and independently verified the implementation symbolically using **SymPy** before producing the reported results.
+An earlier version contained an exponent-grouping error in the restricted likelihood calculation. I corrected the formula and independently verified the implementation symbolically using SymPy (outside the notebook, as a one-off check) before producing the reported results.
 
 If one of the transition states does not occur, some transition probabilities cannot be estimated and the test can return `NaN`. This is a limitation of the statistical calculation rather than necessarily a coding error.
 
@@ -307,7 +314,7 @@ If one of the transition states does not occur, some transition probabilities ca
 ## ▶️ How to Run
 
 ```bash
-pip install pandas numpy scipy arch statsmodels matplotlib sympy jupyter
+pip install pandas numpy scipy arch statsmodels matplotlib jupyter
 jupyter notebook notebooks/garch_var_cvar.ipynb
 ```
 
@@ -315,4 +322,4 @@ jupyter notebook notebooks/garch_var_cvar.ipynb
 
 ## 🛠️ Tools
 
-**Python · pandas · NumPy · SciPy · `arch` · statsmodels · Matplotlib · SymPy · Jupyter Notebook**
+**Python · pandas · NumPy · SciPy · `arch` · statsmodels · Matplotlib · Jupyter Notebook**
