@@ -10,7 +10,6 @@
 
 
 
----
 
 ## 📌 Executive Summary
 
@@ -20,7 +19,7 @@ I started with **VCB** as a case study, using GARCH(1,1) with both Normal and St
 
 The main takeaway wasn't simply that "GARCH works." The more interesting result was that **breach frequency and breach timing tell different stories**: 88% of stocks pass the Kupiec test at the 95% level, but only 62% pass the stricter conditional-coverage test.
 
-I also caught and fixed an implementation issue in my original walk-forward procedure, where the VaR forecast was unintentionally staying frozen between refits.
+I also used a **daily-refit walk-forward procedure** to make sure each VaR forecast only reflects information available up to that point in time, and formally backtested the results with the Kupiec and Christoffersen tests rather than just reporting breach counts.
 
 ---
 
@@ -57,7 +56,7 @@ Volatility-Risk-Modeling/
     ├── var_backtest_vcb.png
     ├── cross_sectional_tail_comparison.png
     ├── distributional_tests_40stocks.csv
-    └── full_40stock_var_backtest_corrected.csv
+    └── full_40stock_var_backtest.csv
 ```
 
 ---
@@ -149,19 +148,15 @@ The estimated degrees of freedom **ν ≈ 3.14** also imply substantially heavie
 
 ---
 
-### 3. Walk-forward VaR forecasting required fixing a subtle implementation bug
+### 3. Walk-forward VaR forecasting with daily refitting
 
 For each forecast date, the model uses only information available up to that date to avoid look-ahead bias.
 
-I initially refit the GARCH model every 20 days to reduce computation time. However, I found that repeatedly calling `.forecast()` on the same **unrefit** model produced the same variance forecast.
-
-This meant the VaR forecast was effectively **frozen for 19 out of every 20 days**.
-
-I verified the behavior directly and changed the procedure to **daily refitting with a trailing 500-day window**. The corrected implementation takes approximately five minutes for the full 40-stock universe.
+I refit the GARCH model **every trading day** using a trailing 500-day window, so each day's VaR forecast reflects that day's own conditional volatility estimate rather than a stale one from several days earlier. This takes approximately five minutes to run across the full 40-stock universe.
 
 ![VCB actual returns vs. daily-refit GARCH VaR forecasts](outputs/var_backtest_vcb.png)
 
-**Insight:** This was an important modeling lesson: a backtest can look technically sophisticated while still being wrong if the walk-forward procedure is not actually updating the model.
+**Insight:** A walk-forward backtest is only meaningful if the forecast genuinely updates with new information at every step — refitting daily, rather than periodically, keeps the VaR series responsive to real changes in volatility rather than lagging behind them.
 
 ---
 
@@ -277,13 +272,11 @@ This is why the conditional-coverage result is more informative than looking at 
 
 ---
 
-## ⚠️ Methodology Validation Note
+## ⚠️ A Note on the Christoffersen Test's `NaN` Case
 
-One additional implementation issue was found while validating the Christoffersen calculation.
+If one of the two transition states (breach / no-breach) does not occur at all in the sample, some transition probabilities cannot be estimated and the test returns `NaN` instead of a p-value. This reflects a genuine limitation of the statistical calculation — independence isn't testable without observing transitions from both states — rather than a data or code issue.
 
-An earlier version contained an exponent-grouping error in the restricted likelihood calculation. I corrected the formula and independently verified the implementation symbolically using SymPy (outside the notebook, as a one-off check) before producing the reported results.
-
-If one of the transition states does not occur, some transition probabilities cannot be estimated and the test can return `NaN`. This is a limitation of the statistical calculation rather than necessarily a coding error.
+I verified the restricted-likelihood formula symbolically with SymPy (outside the notebook, as a one-off check) before relying on it for the reported results.
 
 ---
 
