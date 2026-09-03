@@ -151,14 +151,14 @@ The estimated degrees of freedom **ν ≈ 3.14** also imply substantially heavie
 
 ### 3. Checking the model actually worked: post-estimation diagnostics
 
-Fitting GARCH and getting a reasonable volatility plot doesn't automatically mean the model did its job. The whole reason for using GARCH was that the raw returns had leftover autocorrelation and ARCH effects -- so before trusting this model for forecasting, I checked whether those effects are actually gone from the **standardized residuals**, or if GARCH(1,1) wasn't enough.
+Fitting GARCH and getting a reasonable volatility plot doesn't automatically mean the model did its job. The whole reason for using GARCH was that the raw returns had leftover autocorrelation and ARCH effects so before trusting this model for forecasting, I checked whether those effects are actually gone from the **standardized residuals**, or if GARCH(1,1) wasn't enough.
 
 | Test               | Statistic | p-value | Result                      |
 | ------------------ | --------: | ------: | --------------------------- |
 | Ljung-Box (lag 10) |    7.7415 |  0.6541 | No leftover autocorrelation |
 | ARCH-LM (5 lags)   |        -- |  0.9936 | No leftover ARCH effects    |
 
-Both come back clean. This is a more direct check than just comparing AIC/BIC against Normal-GARCH earlier -- it confirms GARCH(1,1) actually absorbed the volatility dynamics it was supposed to, rather than just fitting better than an alternative with the same underlying problem.
+This is a more direct check than just comparing AIC/BIC against Normal-GARCH earlier -- it confirms GARCH(1,1) actually absorbed the volatility dynamics it was supposed to, rather than just fitting better than an alternative with the same underlying problem.
 
 **Insight:** Getting a good AIC/BIC score doesn't automatically mean the model adequately captured the volatility clustering -- I still needed to go back and check the residuals directly to confirm GARCH(1,1) was sufficient rather than assuming it from the fit comparison alone.
 
