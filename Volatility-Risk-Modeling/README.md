@@ -17,7 +17,7 @@ I wanted to see how well a GARCH model can capture changing stock volatility, an
 
 I started with **VCB** as a case study, using GARCH(1,1) with both Normal and Student-t innovations to forecast one-day-ahead **VaR and CVaR**. I then backtested the VaR forecasts using the **Kupiec** and **Christoffersen** tests before extending the analysis to 40 Vietnamese stocks.
 
-The main takeaway wasn't simply that "GARCH works." The more interesting result was that **breach frequency and breach timing tell different stories**: 88% of stocks pass the Kupiec test at the 95% level, but only 62% pass the stricter conditional-coverage test.
+The main takeaway wasn't simply whether GARCH could produce reasonable VaR forecasts. The more interesting result was that **breach frequency and breach timing tell different stories**: 88% of stocks pass the Kupiec test at the 95% level, but only 62% pass the stricter conditional-coverage test.
 
 I also used a **daily-refit walk-forward procedure** to make sure each VaR forecast only reflects information available up to that point in time, and formally backtested the results with the Kupiec and Christoffersen tests rather than just reporting breach counts.
 
@@ -90,7 +90,7 @@ The diagnostics answer three different questions:
 
 | Diagnostic                 | What it checks                    | Modeling implication                                  |
 | -------------------------- | --------------------------------- | ----------------------------------------------------- |
-| **ADF**                    | Is the return series stationary?  | Confirms the return series is stationary              |
+| **ADF**                    | Is the return series stationary?  | Provides evidence that the return series is stationary              |
 | **ARCH-LM**                | Is there volatility clustering?   | Provides evidence for conditional volatility modeling |
 | **Jarque-Bera + Q-Q plot** | Are returns normally distributed? | Motivates heavy-tailed innovations                    |
 
@@ -156,8 +156,7 @@ I refit the GARCH model **every trading day** using a trailing 500-day window, s
 
 ![VCB actual returns vs. daily-refit GARCH VaR forecasts](outputs/var_backtest_vcb.png)
 
-**Insight:** A walk-forward backtest is only meaningful if the forecast genuinely updates with new information at every step — refitting daily, rather than periodically, keeps the VaR series responsive to real changes in volatility rather than lagging behind them.
-
+**Insight:** A walk-forward backtest is only meaningful if the forecast actually updates as new data becomes available. In this implementation, I refit the model every day using the latest estimation window, so the VaR forecast is recalculated rather than carried forward from an earlier model fit.
 ---
 
 ### 4. VCB VaR forecasts were not rejected by the backtests
