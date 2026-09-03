@@ -156,7 +156,8 @@ I refit the GARCH model **every trading day** using a trailing 500-day window, s
 
 ![VCB actual returns vs. daily-refit GARCH VaR forecasts](outputs/var_backtest_vcb.png)
 
-**Insight:** A walk-forward backtest is only meaningful if the forecast actually updates as new data becomes available. In this implementation, I refit the model every day using the latest estimation window, so the VaR forecast is recalculated rather than carried forward from an earlier model fit.
+
+
 ---
 
 ### 4. VCB VaR forecasts were not rejected by the backtests
