@@ -102,16 +102,16 @@ Bootstrap Inference
 </td>
 
 <td valign="top">
-SPY & AAPL<br>
+SPY, AAPL, TLT & XLF<br>
 31 Fed rate-change events<br>
 2013–2026<br>
 FRED + Yahoo Finance
 </td>
 
 <td valign="top">
-Market-wide volatility rises significantly around FOMC events (permutation p≈0.000, Mann-Whitney p=0.021), while <b>no individual asset (AAPL/TLT/XLF) shows a significant abnormal return</b> across three independent tests.
+Market-wide volatility rises significantly around FOMC events across multiple independent tests (Welch's t-test, Mann–Whitney U, permutation, bootstrap), while <b>no individual asset (AAPL/TLT/XLF) shows a statistically significant abnormal return</b> under the market model.
 <br><br>
-Identified a pooling artifact that had overstated an earlier ARCH-LM significance test (pooled p&lt;0.0001 vs. only 10–16% of per-window estimates actually showing ARCH effects).
+Identified and corrected a pooling artifact that had inflated ARCH-LM significance: pooling residuals across all event windows into a single test yields <b>p &lt; 1e-6</b>, while per-window ARCH-LM tests show a much smaller share of windows actually exhibiting ARCH effects.
 </td>
 
 </tr>
