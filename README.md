@@ -1,4 +1,4 @@
-# Welcome to My Quantitative Finance World 📈
+# Welcome to My Financial World 📈
 
 ---
 
