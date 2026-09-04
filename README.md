@@ -109,7 +109,7 @@ FRED + Yahoo Finance
 </td>
 
 <td valign="top">
-Market-wide volatility rises significantly around FOMC events across multiple independent tests (Welch's t-test, Mann–Whitney U, permutation, bootstrap), while <b>no individual asset (AAPL/TLT/XLF) shows a statistically significant abnormal return</b> under the market model.
+Market-wide volatility rises around FOMC events, significant under Mann–Whitney, permutation, and bootstrap tests (Welch's t-test marginal at p=0.055), while <b>no individual asset (AAPL/TLT/XLF) shows a statistically significant abnormal return</b> under the market model.
 <br><br>
 Identified and corrected a pooling artifact that had inflated ARCH-LM significance: pooling residuals across all event windows into a single test yields <b>p &lt; 1e-6</b>, while per-window ARCH-LM tests show a much smaller share of windows actually exhibiting ARCH effects.
 </td>
