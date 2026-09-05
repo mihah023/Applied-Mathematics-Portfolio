@@ -41,7 +41,9 @@ Every event window is checked for overlap with the others (in case two announcem
 
 ## Q1: Is the market more volatile around FOMC?
 
-The main measure here is just **|return|** — the absolute daily return, averaged over the 3-day window `[-1, 0, +1]` around each event. It's the most direct way to answer "did the market swing harder," since it looks straight at what actually happened rather than through a model. I compare it against 1,061 ordinary 3-day windows elsewhere in the sample (excluding a buffer around every event so nothing leaks in). One thing worth flagging up front: these "normal" windows aren't matched to events by time period, so if events happen to cluster in a high-vol stretch, part of the difference below could just be that stretch, not FOMC itself.
+The main measure is **|return|**, or the absolute daily return, averaged over the 3-day window `[-1, 0, +1]` around each event. This directly shows how much the market moved.
+
+I compare it with 1,061 normal 3-day windows, leaving a buffer around FOMC events. One limitation is that these normal windows are **not matched by time period**, so some of the difference could come from periods when the market was already more volatile.
 
 **Results (31 events):**
 
@@ -60,15 +62,19 @@ Pulling out the 2 emergency COVID cuts (March 2020), leaving 29 events:
 
 The gap shrinks by more than half (+0.55pp → +0.22pp), and Welch/Mann-Whitney both lose significance — only permutation and the bootstrap CI (barely) still hold. So the honest read is: **there's a real signal, but it's weaker and less certain for a typical meeting than the full sample makes it look — a meaningful chunk of the full-sample strength comes from two extreme COVID days.**
 
-**Robustness check — does this hold up with a model-based volatility measure instead?** I reran the same comparison using walk-forward GARCH(1,1) conditional volatility (refit periodically using only past data, so it never "cheats" with future information — 30 of the 31 events have enough history for this). It agrees directionally but is noticeably weaker: full sample gives 1.22% vs. 0.93% (only the permutation test is significant, p=0.009; Welch and Mann-Whitney aren't), and after removing the 2 COVID events the gap nearly vanishes (0.98% vs. 0.93%) with **nothing significant at all**. So both measures agree on the main story — most of the apparent "FOMC raises volatility" effect in the full sample comes from two extreme days in March 2020, not a stable pattern at ordinary meetings — but the model-based measure shows that story even more starkly than the raw-return version does.
+**Robustness check — GARCH volatility**
 
-Direction-wise, mean return isn't different between event days and normal days (p's all well above 0.05) — the Fed doesn't seem to push prices one way or the other, at least not in a way this sample can detect. It just seems to be about how much things swing.
+GARCH gives a similar but weaker result. After removing the two COVID events in March 2020, the difference almost disappears (0.98% vs. 0.93%) and is no longer significant.
+
+**Takeaway:** the higher FOMC volatility is mainly driven by the extreme COVID events, not a stable pattern in normal meetings.
+
+
 
 ---
 
 ## Q2a: Do the individual stocks move with the market?
 
-Before calling anything "abnormal," I wanted a baseline — do these assets even move in the same direction as SPY around FOMC?
+Before looking at abnormal returns, I first checked if these assets usually move in the same direction as SPY around FOMC days.
 
 For each event I take the compounded 3-day return of each asset, check its sign against SPY's, and correlate across all 31 events:
 
@@ -78,7 +84,8 @@ For each event I take the compounded 3-day return of each asset, check its sign 
 | XLF (financials) | 84% | 0.90 |
 | TLT (Treasuries) | 52% | -0.07 |
 
-AAPL and XLF pretty clearly move with the market around these events — makes sense, they're stocks. TLT is basically a coin flip, which also makes sense: Treasuries care about rate expectations, not equity sentiment.
+AAPL and XLF move pretty closely with the market around FOMC days, which makes sense since they are stocks. TLT is more mixed, which also makes sense because Treasuries react more to rate expectations than stock market moves.
+
 
 ---
 
@@ -108,7 +115,10 @@ Checked residuals from each of the 31 regressions individually (not all mashed t
 | TLT | 10% | 10% | 2.01 |
 | XLF | 52% | 16% | 1.97 |
 
-AAPL residuals are pretty fat-tailed (not surprising for a tech stock), but actual ARCH effects only show up in 10-16% of windows — much lower than you'd guess if you pooled everything into one big test. Wilcoxon and bootstrap (neither assumes normality) agree with the t-test everywhere, which is what makes me trust the null result — three different methods landing on "nothing here" is more convincing than any one of them alone.
+AAPL returns have some extreme values, which is pretty normal for a tech stock. But actual ARCH effects only appear in about 10–16% of the windows. Wilcoxon, bootstrap, and t-test all give the same result: **no clear ARCH effect**.
+
+**Takeaway:** since different tests all give the same result, I’m more confident that there isn’t a strong ARCH effect here.
+
 
 ---
 
@@ -118,17 +128,20 @@ The idea: if FOMC resolves uncertainty, VIX should tick up beforehand and come b
 
 Looking at the VIX change from 3 days before the event to the event day, and from the event day to 3 days after:
 
-VIX ticks up a bit heading into the event (+1.05 points) but not significantly (p=0.37). It also ticks up slightly afterward instead of falling (+0.38, p=0.64) — also not significant. So I can't really say this pattern shows up here. It's possible the real effect happens in a tight window right around the 2pm announcement and just gets averaged out over the full trading day — daily data might be too blunt an instrument for this one.
+VIX goes up a little before FOMC (+1.05), but the change is not significant (p=0.37). After the event, it also goes up slightly (+0.38, p=0.64), but again not significant.
+
+**Takeaway:** I can’t say FOMC clearly affects VIX here. The effect might happen around the 2pm announcement and get missed by daily data.
 
 ---
 
 ## What I'd do with more time
 
-- Match the "normal" comparison windows to events by time period, not just pool everything — this is probably the biggest thing missing from Q1 right now.
-- Use intraday data for the VIX question — that's where the real action probably is.
-- Run this on all ~104 FOMC meetings instead of just the 31 rate-change ones — more data might sharpen Q1.
-- Use an actual "surprise" measure (Fed Funds futures) instead of just hike/cut — I tried a 2-year yield proxy and it went the wrong direction, probably too noisy/confounded with macro stuff.
-- Check whether any of the 31 events overlap with AAPL earnings or other big market news.
+* Match normal days with FOMC days by time period instead of pooling everything.
+* Use intraday data for VIX to better capture the reaction around the 2pm announcement.
+* Include all ~104 FOMC meetings instead of only the 31 rate-change events.
+* Use Fed Funds futures to measure the actual rate surprise instead of the 2-year yield.
+* Check if any events overlap with AAPL earnings or other major news.
+
 
 ---
 
