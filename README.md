@@ -88,7 +88,7 @@ Student-t-GARCH substantially improves VCB model fit over Normal-GARCH (AIC <b>2
 </a>
 <br><br>
 <sub>
-<a href="https://github.com/mihah023/Applied-Mathematics-Portfolio/blob/main/FOMC-Event-Study/fomc_event_study_(1).ipynb">
+<a href="https://github.com/mihah023/Applied-Mathematics-Portfolio/blob/main/FOMC-Event-Study/fomc_event_study_.ipynb">
 Notebook ↗
 </a>
 </sub>
