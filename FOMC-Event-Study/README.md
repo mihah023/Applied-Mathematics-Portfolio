@@ -1,82 +1,76 @@
 # Fed Rate-Change Event Study
 
-*Does the stock market react to Fed interest rate decisions — and if it does, where does that reaction actually live: the market as a whole, or individual stocks?*
+*Does the stock market actually react to Fed rate decisions — and if it does, where does that reaction live: the whole market, or individual stocks?*
 
 ---
 
 ## The question
 
-"The market reacts to Fed decisions" is conventional wisdom in finance — this project checks it with data, and goes one step further: **if the market does react, where does that reaction live?** Does a specific stock do something "special" of its own, or does it just move because the whole market moves?
+Everyone in finance says "the market reacts to the Fed." I wanted to actually check that with data, and push it one step further: **if the market does react, where does the reaction live?** Is a specific stock doing something of its own, or is it just getting dragged along because the whole market moves?
 
-Three questions, each using a different method, each one opening up the next:
+Three questions, each building on the last:
 
 1. **Does the market as a whole (SPY) get more volatile around FOMC rate-decision dates?**
-2. **Do individual assets (AAPL, XLF, TLT) move together with the market around these events** — and after netting out that normal co-movement, **is there any abnormal reaction left over?**
-3. *(Exploratory)* **Does VIX — the market's own uncertainty gauge — change around the announcement, as theory predicts?**
+2. **Do individual stocks (AAPL, XLF, TLT) just move with the market around these events, or is there something extra going on once you strip out normal market co-movement?**
+3. *(bonus)* **Does VIX — the market's own "fear gauge" — move around the announcement the way theory says it should?**
 
 ---
 
-## Step 1: Data and event-date construction
+## Data and event dates
 
-Three data sources aligned by date:
+Five series, all daily, 2013–2026, pulled from Yahoo Finance:
 
-- **SPY** (S&P 500 ETF — "the market") — daily, 2013–2026, Yahoo Finance
-- **AAPL, TLT (long-term Treasuries), XLF (financial sector ETF)** — same range, Yahoo Finance
-- **VIX** — implied-volatility index, Yahoo Finance (ticker `^VIX`)
+- **SPY** — stands in for "the market"
+- **AAPL, TLT (long Treasuries), XLF (financials ETF)** — the individual assets
+- **VIX** — implied volatility index
 
-Event dates are the 31 actual FOMC rate-change **announcement** dates, cross-checked against the official FOMC action history — not the dates in FRED's `DFEDTARU` series, which record when a new rate becomes *effective*. Effective dates typically lag the announcement by one trading day, so using them directly would misalign the event window with the day the market actually had the information (e.g. the emergency cut was announced Sunday evening, March 15, 2020, but took effect Monday, March 16).
-
-Each event carries a `timing` flag — `intraday` (announced during market hours, the large majority) or `after_hours` (only March 15, 2020) — which a mapping function uses to find the correct trading day for the reaction window:
+The 31 event dates are actual FOMC rate-change announcements, checked against the official Fed history. Each one has a `timing` tag (announced during market hours, or after-hours — only the March 15, 2020 emergency cut falls in the second bucket), which decides which trading day counts as the "reaction day":
 
 ```python
 def map_to_event_day(ann_date, timing, trading_dates_sorted):
     if timing == "after_hours":
-        candidates = [d for d in trading_dates_sorted if d > ann_date]   # wait for the next session
+        candidates = [d for d in trading_dates_sorted if d > ann_date]
     else:
-        candidates = [d for d in trading_dates_sorted if d >= ann_date]  # same-day reaction is possible
+        candidates = [d for d in trading_dates_sorted if d >= ann_date]
     return candidates[0] if candidates else None
 ```
 
-All 31 event windows were checked for overlap (a ±1 window could double-count a trading day if two announcements landed close together) — none found; every FOMC announcement in the sample is far enough from the next that this isn't a concern here.
+Every event window is checked for overlap with the others (in case two announcements land close together) — none found in this sample.
 
 ---
 
-## Step 2: Q1 — Is the market unusually volatile?
+## Q1: Is the market more volatile around FOMC?
 
-**Method:** rather than using `|return|` as a rough volatility proxy, this section fits a **GARCH(1,1)** model and uses its conditional volatility, $\sigma_t = \sqrt{Var(R_t \mid \mathcal{F}_{t-1})}$ — an estimate that accounts for volatility clustering, not just a single day's noisy return.
+I measure volatility with a **GARCH(1,1)** model instead of just looking at raw daily returns — GARCH conditional volatility, $\sigma_t = \sqrt{Var(R_t \mid \mathcal{F}_{t-1})}$, picks up on the fact that volatile days cluster together, which a single day's return can't capture on its own. The model is estimated walk-forward (refit periodically using only past data, then updated day-by-day) so it never "cheats" by using future returns to estimate a past event's volatility. 30 of the 31 events have enough history for this — the earliest one gets dropped.
 
-To avoid look-ahead bias, GARCH is estimated **walk-forward**: refit periodically (every ~250 trading days) using only the return history available up to that point, then $\sigma_t$ is updated day-by-day with the fixed parameters and the actual realized returns. A parameter estimated in 2018 never sees 2023 data. Each event's window `[-1, 0, +1]` is collapsed to its mean $\sigma_t$; **30 of the 31 events** have enough pre-event history (~3 years minimum) for this — the earliest event is excluded.
-
-The comparison group is 814 non-overlapping "normal" 3-day windows, built by excluding a ±2-day buffer around every event. **Important limitation:** these windows are not matched to events by time period or volatility regime — if event windows disproportionately fall in high-volatility periods, part of any observed difference could reflect that regime rather than FOMC itself. The results below (particularly what happens after removing March 2020) illustrate this limitation directly.
+I compare the average volatility in the 3-day window around each event `[-1, 0, +1]` against 814 ordinary 3-day windows elsewhere in the sample (excluding a buffer around every event so nothing leaks in). One thing worth flagging up front: these "normal" windows aren't matched to events by time period, so if events happen to cluster in a high-vol stretch, part of the difference below could just be that stretch, not FOMC itself — the March 2020 result makes this pretty visible.
 
 **Results (30 events):**
 
 | | Mean conditional volatility | Welch p | Mann-Whitney p | Permutation p | Bootstrap 95% CI |
 |---|---|---|---|---|---|
-| 30 events | 1.22% | 0.187 | 0.473 | 0.011 | [-0.05%, 0.76%] |
+| FOMC events | 1.22% | 0.187 | 0.473 | 0.011 | [-0.05%, 0.76%] |
 | Normal days | 0.93% | | | | |
 
-Evidence is **mixed, not consistent**: only the permutation test clears 5% significance, Welch and Mann-Whitney don't, and the bootstrap CI still (barely) contains zero. A sample-size sensitivity check — repeatedly subsampling the non-event pool down to 30 windows — gives a similarly positive range ([0.08%, 0.44%]), so the result isn't simply an artifact of the non-event pool being much larger. It does *not*, however, address the regime-matching limitation above.
+Only the permutation test clears 5%; Welch and Mann-Whitney don't. So I wouldn't call this a slam dunk — it's a positive signal, not a settled one. A quick check (repeatedly resampling the normal-day pool down to 30 windows) gives a similar range, so it's not purely a sample-size thing either.
 
-Excluding the 2 emergency COVID cuts (March 3 and March 15, 2020, leaving 28 events):
+Pulling out the 2 emergency COVID cuts (March 2020), leaving 28 events:
 
 | | Mean conditional volatility | Welch p | Mann-Whitney p | Permutation p | Bootstrap 95% CI |
 |---|---|---|---|---|---|
-| 28 events (COVID removed) | 0.98% | 0.638 | 0.914 | 0.648 | [-0.13%, 0.24%] |
+| FOMC events (COVID removed) | 0.98% | 0.638 | 0.914 | 0.648 | [-0.13%, 0.24%] |
 
-The gap collapses from +0.29pp to +0.05pp, and **no test remains significant**. In other words: **the full-sample volatility difference is largely driven by two extreme COVID-era events, not a stable pattern across ordinary FOMC meetings.** This is a materially different — and more honest — conclusion than "FOMC increases volatility," and it's a direct consequence of properly separating regime effects from the event itself once enough data was excluded to test it.
+The gap basically disappears (+0.29pp → +0.05pp) and nothing is significant anymore. So the honest read is: **most of what looked like "FOMC raises volatility" in the full sample is really just two extreme days in March 2020**, not a pattern you'd expect to see at a typical meeting.
 
-On direction: mean return isn't significantly different between event and normal days (Welch p=0.605, Mann-Whitney p=0.167, permutation p=0.414) — the Fed doesn't "signal" a price direction around these events, at least not detectably in this sample.
-
-*(One caveat on the permutation test specifically: it assumes observations are exchangeable under the null, which is a stronger assumption for time-dependent financial data with regime effects than for i.i.d. samples — so its p-value shouldn't be read as stronger evidence than Welch/Mann-Whitney disagreeing with it.)*
+Direction-wise, mean return isn't different between event days and normal days (p's all well above 0.05) — the Fed doesn't seem to push prices one way or the other, at least not in a way this sample can detect. It just seems to be about how much things swing.
 
 ---
 
-## Step 3: Q2a — Do individual assets move with the market?
+## Q2a: Do the individual stocks move with the market?
 
-Before asking whether an asset has an *abnormal* reaction, it needs a baseline: does it move in the same direction as the market **around these specific events** at all? (This is a correlation over 31 three-day event windows, not an unconditional full-sample beta.)
+Before calling anything "abnormal," I wanted a baseline — do these assets even move in the same direction as SPY around FOMC?
 
-**Method:** for each event, compute each asset's compounded 3-day return (`(1+R₁)(1+R₂)(1+R₃)-1`), compare its sign to SPY's, and compute the correlation across all 31 events.
+For each event I take the compounded 3-day return of each asset, check its sign against SPY's, and correlate across all 31 events:
 
 | Asset | % same direction as SPY | Correlation (r) |
 |---|---|---|
@@ -84,18 +78,13 @@ Before asking whether an asset has an *abnormal* reaction, it needs a baseline: 
 | XLF (financials) | 84% | 0.90 |
 | TLT (Treasuries) | 52% | -0.07 |
 
-AAPL and XLF track the market closely around FOMC events, as expected for equities. **TLT is essentially a coin flip** — Treasuries respond to their own rate-expectation logic, which doesn't necessarily align with equity sentiment.
+AAPL and XLF pretty clearly move with the market around these events — makes sense, they're stocks. TLT is basically a coin flip, which also makes sense: Treasuries care about rate expectations, not equity sentiment.
 
 ---
 
-## Step 4: Q2b — Is there any reaction beyond just moving with the market?
+## Q2b: Is there anything left over after accounting for that?
 
-**Method — Market Model, run for AAPL, TLT, and XLF:**
-
-1. For each event, take the 120 trading days before it (with a 21-day gap to avoid contamination from pre-event anticipation) and regress `asset_return = alpha + beta × market_return`.
-2. Use that alpha/beta to compute the asset's *expected* return during the 3-day event window (identified by actual calendar date, not table position, so a missing day in one asset's series can't silently shift the window).
-3. Subtract: `actual − expected` = the abnormal part each day.
-4. Sum the 3 days → **Cumulative Abnormal Return (CAR)**, one number per event, 31 per asset.
+For each event, I estimate each asset's alpha/beta against SPY using the 120 trading days before it (with a 21-day gap so I'm not accidentally training on pre-event anticipation), use that to get an "expected" return during the event window, and take actual minus expected — the abnormal return. Sum the 3 days and that's the CAR for that event.
 
 | Asset | Mean beta | Mean CAR | t-test p | Wilcoxon p | Bootstrap 95% CI |
 |---|---|---|---|---|---|
@@ -103,53 +92,47 @@ AAPL and XLF track the market closely around FOMC events, as expected for equiti
 | TLT | -0.14 | +0.44% | 0.117 | 0.107 | [-0.10%, +0.96%] |
 | XLF | 0.98 | -0.25% | 0.307 | 0.189 | [-0.70%, +0.24%] |
 
-Beta confirms Step 3: AAPL is 24% more sensitive than the market, XLF trades close to market-level (it's essentially part of the market), TLT is nearly independent (beta ≈ 0).
+Betas line up with what Q2a already showed: AAPL is more sensitive than the market, XLF trades pretty much at market beta, TLT is close to zero.
 
-**None of the three assets shows a statistically significant CAR at the 5% level.** TLT comes closest (p=0.117) — consistent with Treasuries reacting most directly to rate expectations — but not strong enough to call it a real effect at n=31.
+**None of the three have a significant CAR.** TLT is the closest (p=0.12) but not close enough to call it real with only 31 events.
 
 ---
 
-## Step 5: Checking the null result in Step 4
+## Making sure the null result actually means something
 
-A null result is only trustworthy if it isn't a product of violated test assumptions. Residuals from the 31 estimation regressions were checked **per window, not pooled** (pooling would mix residuals from different estimation windows — calm 2016 vs. chaotic 2022 — collapsing distinct market regimes into one artificial series):
+Checked residuals from each of the 31 regressions individually (not all mashed together, since that would mix calm years with wild ones):
 
-| Asset | % windows failing normality (Jarque-Bera) | % windows showing ARCH | Mean Durbin-Watson |
+| Asset | % windows failing normality | % windows with ARCH | Mean Durbin-Watson |
 |---|---|---|---|
 | AAPL | 87% | 10% | 1.84 |
 | TLT | 10% | 10% | 2.01 |
 | XLF | 52% | 16% | 1.97 |
 
-Non-normality (fat tails) in AAPL is real and widespread, a known feature of tech-stock returns. ARCH effects, however, only show up in 10–16% of individual windows.
-
-As a sanity check, pooling all residuals across windows into one series and running a single ARCH-LM test gives p ≈ 0 for all three assets — dramatically stronger than any per-window result. This is a **pooling artifact, not evidence of ARCH**: concatenating residuals from 31 different estimation windows destroys the temporal structure the test relies on, and mixes together windows drawn from different volatility regimes. It's kept here only to illustrate why pooled diagnostics shouldn't be trusted — the per-window numbers above are the real evidence.
-
-Wilcoxon (no normality assumption) and the bootstrap CI (no distributional assumption) agree with the t-test in every case. Three methods with different assumptions converging on "nothing here" is what makes the null result trustworthy, not any single test in isolation.
+AAPL residuals are pretty fat-tailed (not surprising for a tech stock), but actual ARCH effects only show up in 10-16% of windows — much lower than you'd guess if you pooled everything into one big test. Wilcoxon and bootstrap (neither assumes normality) agree with the t-test everywhere, which is what makes me trust the null result — three different methods landing on "nothing here" is more convincing than any one of them alone.
 
 ---
 
-## Step 6 (exploratory): Does VIX move around the announcement, as theory predicts?
+## Bonus: does VIX move the way theory predicts?
 
-If FOMC decisions resolve some uncertainty, VIX might rise heading into the meeting and fall afterward — a plausible hypothesis, not a certainty (an unexpected decision could just as easily raise post-announcement uncertainty).
+The idea: if FOMC resolves uncertainty, VIX should tick up beforehand and come back down after.
 
-**Method:** two separate one-sample tests — the VIX change from 3 trading days before the event to the event day itself, and from the event day to 3 trading days after.
+Looking at the VIX change from 3 days before the event to the event day, and from the event day to 3 days after:
 
-**Results:** VIX rose modestly in the 3 days heading into the event (+1.05 points), but the change was **not statistically significant** (p=0.367). It also rose slightly (rather than falling) in the 3 days after (+0.38 points), also **not significant** (p=0.637).
-
-Neither leg of the classic "vol-crush" pattern reaches significance here, so this section shouldn't be read as confirming or ruling it out — it's exploratory, not a main finding. In the academic literature the vol-crush effect plays out over a window of minutes around the ~2pm ET release; daily data blends the whole session together, which could plausibly dilute a real intraday effect rather than the effect not existing.
+VIX ticks up a bit heading into the event (+1.05 points) but not significantly (p=0.37). It also ticks up slightly afterward instead of falling (+0.38, p=0.64) — also not significant. So I can't really say this pattern shows up here. It's possible the real effect happens in a tight window right around the 2pm announcement and just gets averaged out over the full trading day — daily data might be too blunt an instrument for this one.
 
 ---
 
-## What I'd do differently with more time/data
+## What I'd do with more time
 
-- **Match non-event windows to events by time period or volatility regime**, rather than pooling all non-event windows together. This is the single biggest methodological gap in Q1 — the March 2020 result shows the current unmatched comparison is sensitive to which regime the events happen to fall in.
-- **Use intraday data instead of daily** — the highest-impact change for Q3, since most of the FOMC reaction happens within minutes of the release and gets diluted when averaged over the full day.
-- **Expand the sample to the full ~104 FOMC meetings**, including meetings where rates were held, not just the 31 rate-change events — a preliminary run on a partial extended sample already showed a stronger Q1 signal, suggesting sample size, not absence of an effect, may be a binding constraint.
-- **Measure actual "surprise" instead of just hike/cut.** Pre-event moves in the 2-year Treasury yield (DGS2), used as a proxy for how much the market had already priced in, produced results in the wrong direction from theory — likely because the proxy is confounded with general macro uncertainty (COVID, the 2022 hiking cycle). A Fed Funds Futures-based surprise measure (the academic standard) would avoid this confound, but that data usually isn't free.
-- **Control for same-day news** — a few of the 31 events could coincide with AAPL earnings or other market-wide shocks, which aren't currently filtered out.
+- Match the "normal" comparison windows to events by time period, not just pool everything — this is probably the biggest thing missing from Q1 right now.
+- Use intraday data for the VIX question — that's where the real action probably is.
+- Run this on all ~104 FOMC meetings instead of just the 31 rate-change ones — more data might sharpen Q1.
+- Use an actual "surprise" measure (Fed Funds futures) instead of just hike/cut — I tried a 2-year yield proxy and it went the wrong direction, probably too noisy/confounded with macro stuff.
+- Check whether any of the 31 events overlap with AAPL earnings or other big market news.
 
 ---
 
-## How to run this
+## Running it
 
 ```text
 fomc-event-study/
@@ -164,6 +147,6 @@ fomc-event-study/
 └── README.md
 ```
 
-Open the notebook and run all cells top to bottom — each section is numbered to match the Steps above (Step 2 = Q1, Steps 3–5 = Q2a/Q2b, Step 6 = Q3).
+Run the notebook top to bottom, sections are numbered to match the questions above.
 
-**Tools used:** Python, `pandas`, `scipy` (t-test, Mann-Whitney, Wilcoxon), `statsmodels` (regression + Jarque-Bera/ARCH-LM/Durbin-Watson diagnostics), `arch` (GARCH(1,1) conditional volatility), `matplotlib`.
+**Tools:** Python, `pandas`, `scipy`, `statsmodels`, `arch` (for GARCH), `matplotlib`.
