@@ -41,26 +41,26 @@ Every event window is checked for overlap with the others (in case two announcem
 
 ## Q1: Is the market more volatile around FOMC?
 
-I measure volatility with a **GARCH(1,1)** model instead of just looking at raw daily returns — GARCH conditional volatility, $\sigma_t = \sqrt{Var(R_t \mid \mathcal{F}_{t-1})}$, picks up on the fact that volatile days cluster together, which a single day's return can't capture on its own. The model is estimated walk-forward (refit periodically using only past data, then updated day-by-day) so it never "cheats" by using future returns to estimate a past event's volatility. 30 of the 31 events have enough history for this — the earliest one gets dropped.
+The main measure here is just **|return|** — the absolute daily return, averaged over the 3-day window `[-1, 0, +1]` around each event. It's the most direct way to answer "did the market swing harder," since it looks straight at what actually happened rather than through a model. I compare it against 1,061 ordinary 3-day windows elsewhere in the sample (excluding a buffer around every event so nothing leaks in). One thing worth flagging up front: these "normal" windows aren't matched to events by time period, so if events happen to cluster in a high-vol stretch, part of the difference below could just be that stretch, not FOMC itself.
 
-I compare the average volatility in the 3-day window around each event `[-1, 0, +1]` against 814 ordinary 3-day windows elsewhere in the sample (excluding a buffer around every event so nothing leaks in). One thing worth flagging up front: these "normal" windows aren't matched to events by time period, so if events happen to cluster in a high-vol stretch, part of the difference below could just be that stretch, not FOMC itself — the March 2020 result makes this pretty visible.
+**Results (31 events):**
 
-**Results (30 events):**
-
-| | Mean conditional volatility | Welch p | Mann-Whitney p | Permutation p | Bootstrap 95% CI |
+| | Mean \|return\| | Welch p | Mann-Whitney p | Permutation p | Bootstrap 95% CI |
 |---|---|---|---|---|---|
-| FOMC events | 1.22% | 0.187 | 0.473 | 0.011 | [-0.05%, 0.76%] |
-| Normal days | 0.93% | | | | |
+| FOMC events | 1.22% | 0.055 | 0.021 | 0.0002 | [0.11%, 1.15%] |
+| Normal days | 0.67% | | | | |
 
-Only the permutation test clears 5%; Welch and Mann-Whitney don't. So I wouldn't call this a slam dunk — it's a positive signal, not a settled one. A quick check (repeatedly resampling the normal-day pool down to 30 windows) gives a similar range, so it's not purely a sample-size thing either.
+Volatility around FOMC is nearly double a normal day's, and 3 of 4 tests clear 5% (Welch is right on the border). A quick sensitivity check — repeatedly resampling the normal-day pool down to 31 windows — gives a similar positive range, so it's not purely a sample-size thing.
 
-Pulling out the 2 emergency COVID cuts (March 2020), leaving 28 events:
+Pulling out the 2 emergency COVID cuts (March 2020), leaving 29 events:
 
-| | Mean conditional volatility | Welch p | Mann-Whitney p | Permutation p | Bootstrap 95% CI |
+| | Mean \|return\| | Welch p | Mann-Whitney p | Permutation p | Bootstrap 95% CI |
 |---|---|---|---|---|---|
-| FOMC events (COVID removed) | 0.98% | 0.638 | 0.914 | 0.648 | [-0.13%, 0.24%] |
+| FOMC events (COVID removed) | 0.88% | 0.063 | 0.078 | 0.026 | [0.01%, 0.44%] |
 
-The gap basically disappears (+0.29pp → +0.05pp) and nothing is significant anymore. So the honest read is: **most of what looked like "FOMC raises volatility" in the full sample is really just two extreme days in March 2020**, not a pattern you'd expect to see at a typical meeting.
+The gap shrinks by more than half (+0.55pp → +0.22pp), and Welch/Mann-Whitney both lose significance — only permutation and the bootstrap CI (barely) still hold. So the honest read is: **there's a real signal, but it's weaker and less certain for a typical meeting than the full sample makes it look — a meaningful chunk of the full-sample strength comes from two extreme COVID days.**
+
+**Robustness check — does this hold up with a model-based volatility measure instead?** I reran the same comparison using walk-forward GARCH(1,1) conditional volatility (refit periodically using only past data, so it never "cheats" with future information — 30 of the 31 events have enough history for this). It agrees directionally but is noticeably weaker: full sample gives 1.22% vs. 0.93% (only the permutation test is significant, p=0.009; Welch and Mann-Whitney aren't), and after removing the 2 COVID events the gap nearly vanishes (0.98% vs. 0.93%) with **nothing significant at all**. So both measures agree on the main story — most of the apparent "FOMC raises volatility" effect in the full sample comes from two extreme days in March 2020, not a stable pattern at ordinary meetings — but the model-based measure shows that story even more starkly than the raw-return version does.
 
 Direction-wise, mean return isn't different between event days and normal days (p's all well above 0.05) — the Fed doesn't seem to push prices one way or the other, at least not in a way this sample can detect. It just seems to be about how much things swing.
 
@@ -88,9 +88,9 @@ For each event, I estimate each asset's alpha/beta against SPY using the 120 tra
 
 | Asset | Mean beta | Mean CAR | t-test p | Wilcoxon p | Bootstrap 95% CI |
 |---|---|---|---|---|---|
-| AAPL | 1.24 | +0.07% | 0.845 | 0.750 | [-0.65%, +0.76%] |
+| AAPL | 1.24 | +0.07% | 0.845 | 0.750 | [-0.65%, +0.77%] |
 | TLT | -0.14 | +0.44% | 0.117 | 0.107 | [-0.10%, +0.96%] |
-| XLF | 0.98 | -0.25% | 0.307 | 0.189 | [-0.70%, +0.24%] |
+| XLF | 0.98 | -0.25% | 0.307 | 0.189 | [-0.70%, +0.22%] |
 
 Betas line up with what Q2a already showed: AAPL is more sensitive than the market, XLF trades pretty much at market beta, TLT is close to zero.
 
@@ -143,7 +143,7 @@ fomc-event-study/
 │   ├── xlf_2013_2026.csv
 │   └── vix_2013_2026.csv
 ├── notebooks/
-│   └── fomc_event_study_garch.ipynb
+│   └── fomc_event_study.ipynb
 └── README.md
 ```
 
