@@ -6,7 +6,7 @@
 
 ## The question
 
-Everyone in finance says "the market reacts to the Fed." I wanted to actually check that with data, and push it one step further: **if the market does react, where does the reaction live?** Is a specific stock doing something of its own, or is it just getting dragged along because the whole market moves?
+We often hear that the market reacts to the Fed so I wanted to actually check that with data, and push it one step further: **if the market does react, where does the reaction live?** Is a specific stock doing something of its own, or is it just getting dragged along because the whole market moves?
 
 Three questions, each building on the last:
 
